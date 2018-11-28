@@ -1,0 +1,14 @@
+/home/womb/projects/DraftJSExporter/DraftJSExporter.Test/bin/Debug/netcoreapp2.1/xunit.runner.visualstudio.dotnetcore.testadapter.dll
+/home/womb/projects/DraftJSExporter/DraftJSExporter.Test/bin/Debug/netcoreapp2.1/xunit.runner.reporters.netcoreapp10.dll
+/home/womb/projects/DraftJSExporter/DraftJSExporter.Test/bin/Debug/netcoreapp2.1/xunit.runner.utility.netcoreapp10.dll
+/home/womb/projects/DraftJSExporter/DraftJSExporter.Test/bin/Debug/netcoreapp2.1/DraftJSExporter.Test.deps.json
+/home/womb/projects/DraftJSExporter/DraftJSExporter.Test/bin/Debug/netcoreapp2.1/DraftJSExporter.Test.runtimeconfig.json
+/home/womb/projects/DraftJSExporter/DraftJSExporter.Test/bin/Debug/netcoreapp2.1/DraftJSExporter.Test.runtimeconfig.dev.json
+/home/womb/projects/DraftJSExporter/DraftJSExporter.Test/bin/Debug/netcoreapp2.1/DraftJSExporter.Test.dll
+/home/womb/projects/DraftJSExporter/DraftJSExporter.Test/bin/Debug/netcoreapp2.1/DraftJSExporter.Test.pdb
+/home/womb/projects/DraftJSExporter/DraftJSExporter.Test/obj/Debug/netcoreapp2.1/DraftJSExporter.Test.csprojAssemblyReference.cache
+/home/womb/projects/DraftJSExporter/DraftJSExporter.Test/obj/Debug/netcoreapp2.1/DraftJSExporter.Test.csproj.CoreCompileInputs.cache
+/home/womb/projects/DraftJSExporter/DraftJSExporter.Test/obj/Debug/netcoreapp2.1/DraftJSExporter.Test.AssemblyInfoInputs.cache
+/home/womb/projects/DraftJSExporter/DraftJSExporter.Test/obj/Debug/netcoreapp2.1/DraftJSExporter.Test.AssemblyInfo.cs
+/home/womb/projects/DraftJSExporter/DraftJSExporter.Test/obj/Debug/netcoreapp2.1/DraftJSExporter.Test.dll
+/home/womb/projects/DraftJSExporter/DraftJSExporter.Test/obj/Debug/netcoreapp2.1/DraftJSExporter.Test.pdb
