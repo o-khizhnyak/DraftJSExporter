@@ -6,34 +6,41 @@ namespace DraftJSExporter
 {
     public class Element
     {
-        private string Type { get; set; }
+        private string Type { get; }
 
-        private Dictionary<string, string> Attributes { get; set; }
+        private Dictionary<string, string> Attributes { get; }
 
-        private Element[] Children { get; set; }
-
+        private List<Element> Children { get; }
+        
         public Element(string type, Dictionary<string, string> attr)
         {
             Type = type;
             Attributes = attr;
+            Children = new List<Element>();
         }
 
         public void AppendChild(Element child)
         {
-            Children.Append(child);
+            Children.Add(child);
         }
 
         public string Render()
         {
-            return RenderElement(this);
+            var sb = new StringBuilder();
+            RenderElement(this, sb, 0);
+            return sb.ToString();
         }
 
-        private static string RenderElement(Element element)
+        private static void RenderElement(Element element, StringBuilder sb, int level)
         {
-            var open = TagBuilder.CreateOpeningTag(element.Type, element.Attributes);
-            var close = TagBuilder.CrateClosingTag(element.Type);
-            var children = "";
-            return new StringBuilder(open).Append(close).ToString();
+            TagBuilder.AddOpeningTag(sb, element.Type, element.Attributes, level);
+            
+            foreach (var child in element.Children)
+            {
+                RenderElement(child, sb, level + 1);
+            }
+            
+            TagBuilder.AddClosingTag(sb, element.Type, level);
         }
     }
 }

@@ -7,17 +7,23 @@ namespace DraftJSExporter
 {
     public static class TagBuilder
     {
-        public static string CreateOpeningTag(string type, Dictionary<string, string> attributes)
+        private const int TabWidth = 4;
+
+        public static void AddOpeningTag(StringBuilder sb, string type, Dictionary<string, string> attributes, int level)
         {
-            var attr = string.Join("", attributes.Select(a => new StringBuilder(" ").Append(a.Key).Append("=")
-                .Append(a.Value).ToString()).ToArray());
-            
-            return new StringBuilder("<").Append(type).Append(attr).Append(">").ToString();
+            var attr = string.Join("", attributes.Select(a => new StringBuilder(" ")
+                .AppendFormat("{0}=\"{1}\"", a.Key, a.Value).ToString()).ToArray());
+
+            sb.Append(new string(' ', TabWidth * level)).AppendFormat("<{0}{1}>", type, attr).AppendLine();
         }
 
-        public static string CrateClosingTag(string type)
+        public static void AddClosingTag(StringBuilder sb, string type, int level)
         {
-            return new StringBuilder("<").Append(type).Append(">").ToString();
+            sb.Append(new string(' ', TabWidth * level)).AppendFormat("</{0}>", type);
+            if (level != 0)
+            {
+                sb.AppendLine();
+            }
         }
     }
 }
