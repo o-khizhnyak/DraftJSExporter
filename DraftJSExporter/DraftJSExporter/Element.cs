@@ -12,10 +12,15 @@ namespace DraftJSExporter
 
         private List<Element> Children { get; }
         
-        public Element(string type, Dictionary<string, string> attr)
+        private string Text { get; }
+
+        public bool Inline { get; set; }
+        
+        public Element(string type = null, Dictionary<string, string> attr = null, string text = null)
         {
             Type = type;
-            Attributes = attr;
+            Attributes = attr ?? new Dictionary<string, string>();
+            Text = text;
             Children = new List<Element>();
         }
 
