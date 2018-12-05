@@ -1,3 +1,5 @@
+using System;
+
 namespace DraftJSExporter.Defaults
 {
     public class StyleMap
@@ -29,5 +31,8 @@ namespace DraftJSExporter.Defaults
         public string Delete { get; set; } = "del";
 
         public string Keyboard { get; set; } = "kbd";
+
+        public string this[string propertyName] => 
+            (string)PropertyExpression<StyleMap>.GetValue(propertyName);
     }
 }

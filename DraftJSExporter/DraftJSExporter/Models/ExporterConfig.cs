@@ -7,8 +7,6 @@ namespace DraftJSExporter
     {
         public EntityDecorators EntityDecorators { get; set; }
 
-        public List<CompositeDecorator> CompositeDecorators { get; set; }
-
         public StyleMap StyleMap { get; set; }
 
         public BlockMap BlockMap { get; set; }

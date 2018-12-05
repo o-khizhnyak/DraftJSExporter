@@ -1,5 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
+using DraftJSExporter.Defaults;
+using Newtonsoft.Json;
 
 namespace DraftJSExporter
 {
@@ -17,27 +19,83 @@ namespace DraftJSExporter
 
         public List<EntityRange> EntityRanges { get; set; }
 
-        public Element ConvertToElement()
+        public Element ConvertToElement(StyleMap styleMap)
         {
             if (InlineStyleRanges.Count == 0 && EntityRanges.Count == 0)
             {
                 return new Element(Type, new Dictionary<string, string>(), Text);
             }
             
-            var styledParts = new Dictionary<string, List<InlineStyleRange>>();
+            var element = new Element(Type);
             
-            var startIndexes = InlineStyleRanges.Select(x => x.Offset);
-            var stopIndexes = InlineStyleRanges.Select(x => x.Offset + x.Length);
-            var indexes = startIndexes.Union(stopIndexes).Distinct().ToList();
+            var indexes = InlineStyleRanges.Select(x => x.Offset)
+                .Union(InlineStyleRanges.Select(x => x.Offset + x.Length))
+                .Union(EntityRanges.Select(x => x.Offset))
+                .Union(EntityRanges.Select(x => x.Offset + x.Length))
+                .Append(0)
+                .Append(Text.Length)
+                .Distinct()
+                .ToList();
 
-            foreach (var index in indexes)
+            Element openedEntity = null;
+
+            for (var i = 0; i < indexes.Count - 1; i++)
             {
-                if (index > 0 && styledParts.Count == 0)
+                var index = indexes[i];
+                var nextIndex = indexes[i + 1];
+                var text = Text.Substring(index, nextIndex);
+                Element child = null;
+
+                foreach (var styleRange in InlineStyleRanges)
                 {
-                    styledParts.Add(Text.Substring(0, index), null);
+                    if (index >= styleRange.Offset && nextIndex <= styleRange.Offset + styleRange.Length)
+                    { 
+                        if (child == null)
+                        {
+                            child = new Element(styleMap[styleRange.Style], null, text, true);                            
+                        }
+                        else
+                        {
+                            child.AppendChild(new Element(styleMap[styleRange.Style], null, text, true));
+                        }
+                    } 
                 }
+                
+                if (child == null)
+                {
+                    child = new Element(null, null, text, true);
+                }
+
+                if (openedEntity == null)
+                {
+                    foreach (var entityRange in EntityRanges)
+                    {
+                        if (index >= entityRange.Offset && nextIndex <= entityRange.Offset + entityRange.Length)
+                        {
+                            openedEntity = new Element();
+                            openedEntity.AppendChild(child);
+                        }
+                        else if(index == entityRange.Offset + entityRange.Length)
+                        {
+                            openedEntity = new Element();
+                            openedEntity.AppendChild(child);
+                            element.AppendChild(openedEntity);
+                            openedEntity = null;
+                        }
+                    }
+
+                    if (openedEntity == null)
+                    {
+                        element.AppendChild(child);                        
+                    }
+                }
+                else
+                {
+                    openedEntity.AppendChild(child);
+                }                              
             }
-            
+
+            return element;
         }
     }
 }

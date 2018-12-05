@@ -14,13 +14,14 @@ namespace DraftJSExporter
         
         private string Text { get; }
 
-        public bool Inline { get; set; }
+        public bool Inline { get; }
         
-        public Element(string type = null, Dictionary<string, string> attr = null, string text = null)
+        public Element(string type = null, Dictionary<string, string> attr = null, string text = null, bool inline = false)
         {
             Type = type;
             Attributes = attr ?? new Dictionary<string, string>();
             Text = text;
+            Inline = inline;
             Children = new List<Element>();
         }
 
