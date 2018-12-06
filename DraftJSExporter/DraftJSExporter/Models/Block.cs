@@ -38,6 +38,7 @@ namespace DraftJSExporter
                 .ToList();
 
             Element openedEntity = null;
+            int? openedEntityStopIndex = null;
 
             for (var i = 0; i < indexes.Count - 1; i++)
             {
@@ -66,33 +67,30 @@ namespace DraftJSExporter
                     child = new Element(null, null, text, true);
                 }
 
+                if (openedEntity != null && openedEntityStopIndex != null && nextIndex < openedEntityStopIndex)
+                {
+                    openedEntity.AppendChild(child);
+                }
+                
+                if (openedEntity != null && openedEntityStopIndex != null && nextIndex == openedEntityStopIndex)
+                {
+                    openedEntity.AppendChild(child);
+                    element.AppendChild(openedEntity);
+                    openedEntity = null;
+                }
+
                 if (openedEntity == null)
                 {
                     foreach (var entityRange in EntityRanges)
                     {
-                        if (index >= entityRange.Offset && nextIndex <= entityRange.Offset + entityRange.Length)
+                        if (index == entityRange.Offset)
                         {
                             openedEntity = new Element();
                             openedEntity.AppendChild(child);
+                            openedEntityStopIndex = entityRange.Offset + entityRange.Length;
                         }
-                        else if(index == entityRange.Offset + entityRange.Length)
-                        {
-                            openedEntity = new Element();
-                            openedEntity.AppendChild(child);
-                            element.AppendChild(openedEntity);
-                            openedEntity = null;
-                        }
-                    }
-
-                    if (openedEntity == null)
-                    {
-                        element.AppendChild(child);                        
                     }
                 }
-                else
-                {
-                    openedEntity.AppendChild(child);
-                }                              
             }
 
             return element;
