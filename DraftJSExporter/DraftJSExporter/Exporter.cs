@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Newtonsoft.Json;
 
 namespace DraftJSExporter
@@ -46,9 +47,9 @@ namespace DraftJSExporter
             return document.Render();
         }
 
-        private Element RenderBlock(Block block, EntityMap entityMap, WrapperState wrapperState)
+        private Element RenderBlock(Block block, Dictionary<int, Entity> entityMap, WrapperState wrapperState)
         {
-            var content = block.ConvertToElement(_config.StyleMap);
+            var content = block.ConvertToElement(_config.StyleMap, entityMap);
         }
     }
 }

@@ -6,6 +6,6 @@ namespace DraftJSExporter
 
         public int Length { get; set; }
 
-        public string Key { get; set; }
+        public int Key { get; set; }
     }
 }

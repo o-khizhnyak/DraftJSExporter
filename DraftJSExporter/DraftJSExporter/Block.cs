@@ -19,7 +19,7 @@ namespace DraftJSExporter
 
         public List<EntityRange> EntityRanges { get; set; }
 
-        public Element ConvertToElement(StyleMap styleMap)
+        public Element ConvertToElement(StyleMap styleMap, Dictionary<int, Entity> entityMap)
         {
             if (InlineStyleRanges.Count == 0 && EntityRanges.Count == 0)
             {
@@ -85,7 +85,8 @@ namespace DraftJSExporter
                     {
                         if (index == entityRange.Offset)
                         {
-                            openedEntity = new Element();
+                            var entity = entityMap[entityRange.Key];
+                            openedEntity = new Element(entity.Type);
                             openedEntity.AppendChild(child);
                             openedEntityStopIndex = entityRange.Offset + entityRange.Length;
                         }

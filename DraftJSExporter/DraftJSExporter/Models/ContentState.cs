@@ -6,6 +6,6 @@ namespace DraftJSExporter
     {
         public List<Block> Blocks { get; set; }
 
-        public EntityMap EntityMap { get; set; }
+        public Dictionary<int, Entity> EntityMap { get; set; }
     }
 }
