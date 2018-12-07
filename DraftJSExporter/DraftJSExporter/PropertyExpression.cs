@@ -11,7 +11,7 @@ namespace DraftJSExporter
 
         public static object GetValue(string propertyName)
         {
-            Cache.GetOrAdd(propertyName, key =>
+            return Cache.GetOrAdd(propertyName, key =>
             {
                 var parameter = Expression.Parameter(typeof(T));
                 var f = Expression.Lambda<Func<T, object>>(

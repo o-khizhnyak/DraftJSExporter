@@ -50,6 +50,7 @@ namespace DraftJSExporter
         private Element RenderBlock(Block block, Dictionary<int, Entity> entityMap, WrapperState wrapperState)
         {
             var content = block.ConvertToElement(_config.StyleMap, entityMap);
+            return content;
         }
     }
 }

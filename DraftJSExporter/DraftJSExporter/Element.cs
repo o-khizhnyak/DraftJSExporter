@@ -33,20 +33,30 @@ namespace DraftJSExporter
         public string Render()
         {
             var sb = new StringBuilder();
-            RenderElement(this, sb, 0);
+            RenderElement(this, sb, 0, true);
             return sb.ToString();
         }
 
-        private static void RenderElement(Element element, StringBuilder sb, int level)
-        {
-            TagBuilder.AddOpeningTag(sb, element.Type, element.Attributes, level);
+        private static void RenderElement(Element element, StringBuilder sb, int level, bool addTab)
+        { 
+            TagBuilder.AddOpeningTag(sb, element.Type, element.Attributes, level, element.Inline, addTab);
             
+            if (element.Text != null)
+            {
+                TagBuilder.AddText(sb, element.Text, element.Inline, level);                
+            }
+
+            var inline = false;
             foreach (var child in element.Children)
             {
-                RenderElement(child, sb, level + 1);
+                RenderElement(child, sb, level + 1, !(inline && child.Inline));
+                inline = child.Inline;
             }
-            
-            TagBuilder.AddClosingTag(sb, element.Type, level);
+
+            if (element.Type != null)
+            {
+                TagBuilder.AddClosingTag(sb, element.Type, level, element.Inline);                
+            }
         }
     }
 }
