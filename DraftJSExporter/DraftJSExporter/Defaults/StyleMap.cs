@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 
 namespace DraftJSExporter.Defaults
 {
@@ -33,6 +34,7 @@ namespace DraftJSExporter.Defaults
         public string Keyboard { get; set; } = "kbd";
 
         public string this[string propertyName] => 
-            (string)PropertyExpression<StyleMap>.GetValue(propertyName);
+            (string)PropertyExpression<StyleMap>.GetValue(this,
+                propertyName.First().ToString().ToUpper() + propertyName.Substring(1).ToLower());
     }
 }

@@ -1,3 +1,6 @@
+using System;
+using System.Collections.Generic;
+
 namespace DraftJSExporter
 {
     public class Entity
@@ -6,6 +9,6 @@ namespace DraftJSExporter
 
         public string Mutability { get; set; }
 
-        public object Data { get; set; }
+        public Dictionary<string, string> Data { get; set; }
     }
 }

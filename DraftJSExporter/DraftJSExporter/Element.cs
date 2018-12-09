@@ -6,38 +6,43 @@ namespace DraftJSExporter
 {
     public class Element
     {
-        private string Type { get; }
+        public string Type { get; }
 
-        private Dictionary<string, string> Attributes { get; }
+        public IReadOnlyDictionary<string, string> Attributes { get; }
 
-        private List<Element> Children { get; }
+        public List<Element> Children { get; }
         
-        private string Text { get; }
+        public string Text { get; set; }
 
         public bool Inline { get; }
         
-        public Element(string type = null, Dictionary<string, string> attr = null, string text = null, bool inline = false)
+        public bool Wrapper { get; }
+        
+        public Element(string type = null, IReadOnlyDictionary<string, string> attr = null, string text = null, 
+            bool inline = false, bool wrapper = false)
         {
             Type = type;
             Attributes = attr ?? new Dictionary<string, string>();
             Text = text;
             Inline = inline;
             Children = new List<Element>();
+            Wrapper = wrapper;
         }
 
         public void AppendChild(Element child)
         {
             Children.Add(child);
         }
-
+        
         public string Render()
         {
             var sb = new StringBuilder();
-            RenderElement(this, sb, 0, true);
+            RenderElement(this, sb, 0, true, true, false);
             return sb.ToString();
         }
 
-        private static void RenderElement(Element element, StringBuilder sb, int level, bool addTab)
+        private static void RenderElement(Element element, StringBuilder sb, int level, bool addTab, bool lastChild, 
+            bool parentIsInline)
         { 
             TagBuilder.AddOpeningTag(sb, element.Type, element.Attributes, level, element.Inline, addTab);
             
@@ -47,16 +52,17 @@ namespace DraftJSExporter
             }
 
             var inline = false;
-            foreach (var child in element.Children)
+            var childrenCount = element.Children.Count;
+            for (var i = 0; i < childrenCount; i++)
             {
-                RenderElement(child, sb, level + 1, !(inline && child.Inline));
+                var child = element.Children[i];
+                RenderElement(child, sb, element.Type == null && element.Text == null ? level : level + 1, 
+                    !(inline && child.Inline) && !(child.Type == null && !child.Inline) && !element.Inline, 
+                    i == childrenCount - 1, element.Inline);
                 inline = child.Inline;
             }
 
-            if (element.Type != null)
-            {
-                TagBuilder.AddClosingTag(sb, element.Type, level, element.Inline);                
-            }
+            TagBuilder.AddClosingTag(sb, element.Type, level, element.Inline, lastChild, parentIsInline);
         }
     }
 }

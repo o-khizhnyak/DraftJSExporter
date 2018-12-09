@@ -9,7 +9,7 @@ namespace DraftJSExporter
     {
         private const int TabWidth = 4;
 
-        public static void AddOpeningTag(StringBuilder sb, string type, Dictionary<string, string> attributes, 
+        public static void AddOpeningTag(StringBuilder sb, string type, IReadOnlyDictionary<string, string> attributes, 
             int level, bool inline, bool addTab)
         {
             if (addTab)
@@ -23,24 +23,28 @@ namespace DraftJSExporter
                     .AppendFormat("{0}=\"{1}\"", a.Key, a.Value).ToString()).ToArray());
                 
                 sb.AppendFormat("<{0}{1}>", type, attr);
-            }
-
-            if (!inline)
-            {
-                sb.AppendLine();
+                
+                if (!inline)
+                {
+                    sb.AppendLine();
+                }
             }
         }
 
-        public static void AddClosingTag(StringBuilder sb, string type, int level, bool inline)
+        public static void AddClosingTag(StringBuilder sb, string type, int level, bool inline, bool lastChild, 
+            bool parentIsInline)
         {
-            if (!inline)
+            if (type != null)
             {
-                sb.Append(new string(' ', TabWidth * level));
+                if (!inline)
+                {
+                    sb.Append(new string(' ', TabWidth * level));
+                }
+                
+                sb.AppendFormat("</{0}>", type);   
             }
             
-            sb.AppendFormat("</{0}>", type);
-            
-            if (level != 0)
+            if ((!inline || lastChild) && !(!inline && type == null) && !(lastChild && level == 0) && !parentIsInline)
             {
                 sb.AppendLine();
             }
@@ -52,7 +56,9 @@ namespace DraftJSExporter
             {
                 sb.Append(new string(' ', TabWidth * (level + 1)));
             }
+            
             sb.Append(text);
+            
             if (!inline)
             {
                 sb.AppendLine();

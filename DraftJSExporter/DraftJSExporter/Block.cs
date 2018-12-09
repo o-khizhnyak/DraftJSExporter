@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Data.Common;
 using System.Linq;
 using DraftJSExporter.Defaults;
 using Newtonsoft.Json;
@@ -7,8 +8,6 @@ namespace DraftJSExporter
 {
     public class Block
     {
-        public string Key { get; set; }
-
         public string Text { get; set; }
 
         public string Type { get; set; }
@@ -19,23 +18,25 @@ namespace DraftJSExporter
 
         public List<EntityRange> EntityRanges { get; set; }
 
-        public Element ConvertToElement(StyleMap styleMap, Dictionary<int, Entity> entityMap)
+        public Element ConvertToElement(ExporterConfig config, Dictionary<int, Entity> entityMap, Element wrapper)
         {
             if (InlineStyleRanges.Count == 0 && EntityRanges.Count == 0)
             {
-                return new Element(Type, new Dictionary<string, string>(), Text);
+                return config.BlockMap.GenerateBlockElement(Type, Depth, Text, wrapper);
             }
             
-            var element = new Element(Type);
+            var element = config.BlockMap.GenerateBlockElement(Type, Depth, null, wrapper);
             
             var indexes = InlineStyleRanges.Select(x => x.Offset)
                 .Union(InlineStyleRanges.Select(x => x.Offset + x.Length))
                 .Union(EntityRanges.Select(x => x.Offset))
                 .Union(EntityRanges.Select(x => x.Offset + x.Length))
-                .Append(0)
+                .Prepend(0)
                 .Append(Text.Length)
                 .Distinct()
                 .ToList();
+            
+            indexes.Sort();
 
             Element openedEntity = null;
             int? openedEntityStopIndex = null;
@@ -44,7 +45,7 @@ namespace DraftJSExporter
             {
                 var index = indexes[i];
                 var nextIndex = indexes[i + 1];
-                var text = Text.Substring(index, nextIndex);
+                var text = Text.Substring(index, nextIndex - index);
                 Element child = null;
 
                 foreach (var styleRange in InlineStyleRanges)
@@ -53,11 +54,12 @@ namespace DraftJSExporter
                     { 
                         if (child == null)
                         {
-                            child = new Element(styleMap[styleRange.Style], null, text, true);                            
+                            child = new Element(config.StyleMap[styleRange.Style], null, text, true);                            
                         }
                         else
                         {
-                            child.AppendChild(new Element(styleMap[styleRange.Style], null, text, true));
+                            child.Text = null;
+                            child.AppendChild(new Element(config.StyleMap[styleRange.Style], null, text, true));
                         }
                     } 
                 }
@@ -67,18 +69,6 @@ namespace DraftJSExporter
                     child = new Element(null, null, text, true);
                 }
 
-                if (openedEntity != null && openedEntityStopIndex != null && nextIndex < openedEntityStopIndex)
-                {
-                    openedEntity.AppendChild(child);
-                }
-                
-                if (openedEntity != null && openedEntityStopIndex != null && nextIndex == openedEntityStopIndex)
-                {
-                    openedEntity.AppendChild(child);
-                    element.AppendChild(openedEntity);
-                    openedEntity = null;
-                }
-
                 if (openedEntity == null)
                 {
                     foreach (var entityRange in EntityRanges)
@@ -86,10 +76,29 @@ namespace DraftJSExporter
                         if (index == entityRange.Offset)
                         {
                             var entity = entityMap[entityRange.Key];
-                            openedEntity = new Element(entity.Type);
-                            openedEntity.AppendChild(child);
+                            openedEntity = config.EntityDecorators[entity.Type](entity.Data);
                             openedEntityStopIndex = entityRange.Offset + entityRange.Length;
                         }
+                    }
+
+                    if (openedEntity == null)
+                    {
+                        element.AppendChild(child);
+                    }
+                }
+                
+                if (openedEntity != null && openedEntityStopIndex != null)
+                {
+                    if (nextIndex < openedEntityStopIndex)
+                    {
+                        openedEntity.AppendChild(child);
+                    }
+
+                    if (nextIndex == openedEntityStopIndex)
+                    {
+                        openedEntity.AppendChild(child);
+                        element.AppendChild(openedEntity);
+                        openedEntity = null;    
                     }
                 }
             }

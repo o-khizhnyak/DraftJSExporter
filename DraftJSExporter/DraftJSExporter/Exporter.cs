@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using Newtonsoft.Json;
 
 namespace DraftJSExporter
@@ -20,37 +21,28 @@ namespace DraftJSExporter
             }
 
             var contentState = JsonConvert.DeserializeObject<ContentState>(contentStateJson);
-            var wrapperState = new WrapperState(contentState.Blocks);
-            var document = new Element();
-            var minDepth = 0;
+            var root = new Element();
+            Element wrapper = null;
 
             foreach (var block in contentState.Blocks)
             {
-                var element = RenderBlock(block, contentState.EntityMap, wrapperState);
-                
-                if (block.Depth > minDepth)
+                var element = block.ConvertToElement(_config, contentState.EntityMap, wrapper);
+                if (element.Wrapper)
                 {
-                    minDepth = block.Depth;
+                    if (wrapper == null)
+                    {
+                        wrapper = element;
+                        root.AppendChild(element);
+                    }
                 }
-
-                if (block.Depth == 0)
+                else
                 {
-                    document.AppendChild(element);
+                    root.AppendChild(element);
+                    wrapper = null;
                 }
             }
 
-            if (minDepth > 0 && wrapperState.GetStackLength() != 0)
-            {
-                document.AppendChild(wrapperState.GetStackTail());
-            }
-
-            return document.Render();
-        }
-
-        private Element RenderBlock(Block block, Dictionary<int, Entity> entityMap, WrapperState wrapperState)
-        {
-            var content = block.ConvertToElement(_config.StyleMap, entityMap);
-            return content;
+            return root.Render();
         }
     }
 }

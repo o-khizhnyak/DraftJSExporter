@@ -9,7 +9,7 @@ namespace DraftJSExporter
         private static readonly ConcurrentDictionary<string, Func<T, object>> Cache =
             new ConcurrentDictionary<string, Func<T, object>>(); 
 
-        public static object GetValue(string propertyName)
+        public static object GetValue(T value, string propertyName)
         {
             return Cache.GetOrAdd(propertyName, key =>
             {
@@ -17,7 +17,7 @@ namespace DraftJSExporter
                 var f = Expression.Lambda<Func<T, object>>(
                     Expression.Convert(Expression.Property(parameter, key), typeof(object)), parameter).Compile();
                 return f;
-            });
+            })(value);
         }
     }
 }
