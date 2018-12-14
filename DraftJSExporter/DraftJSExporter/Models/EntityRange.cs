@@ -1,6 +1,6 @@
 namespace DraftJSExporter
 {
-    public class EntityRange
+    public class EntityRange: IHasOffsetLength
     {
         public int Offset { get; set; }
 

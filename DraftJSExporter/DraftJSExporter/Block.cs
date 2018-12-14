@@ -27,17 +27,20 @@ namespace DraftJSExporter
             
             var element = config.BlockMap.GenerateBlockElement(Type, Depth, null, wrapper);
             
-            var indexes = InlineStyleRanges.Select(x => x.Offset)
-                .Union(InlineStyleRanges.Select(x => x.Offset + x.Length))
-                .Union(EntityRanges.Select(x => x.Offset))
-                .Union(EntityRanges.Select(x => x.Offset + x.Length))
-                .Prepend(0)
-                .Append(Text.Length)
-                .Distinct()
-                .ToList();
-            
-            indexes.Sort();
+            var indexesSet = new SortedSet<int>
+            {
+                0, Text.Length
+            };
+            var ranges = InlineStyleRanges.Cast<IHasOffsetLength>().Concat(EntityRanges);
 
+            foreach (var range in ranges)
+            {
+                indexesSet.Add(range.Offset);
+                indexesSet.Add(range.Offset + range.Length);
+            }
+
+            var indexes = indexesSet.ToList();
+            
             Element openedEntity = null;
             int? openedEntityStopIndex = null;
 

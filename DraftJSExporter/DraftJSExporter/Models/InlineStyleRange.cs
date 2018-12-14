@@ -1,6 +1,6 @@
 namespace DraftJSExporter
 {
-    public class InlineStyleRange
+    public class InlineStyleRange: IHasOffsetLength
     {
         public int Offset { get; set; }
 
