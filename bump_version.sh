@@ -26,9 +26,9 @@ if [ -z "$VERSION" ]; then
 fi
 
 
-sed -i -r "s/<Version>[0-9]+.[0-9]+.[0-9]+</Version>/<Version>${VERSION}</Version>/" ./src/Version.props
+sed -i -r "s#<Version>[0-9]+.[0-9]+.[0-9]+</Version>#<Version>${VERSION}</Version>#" ./DraftJSExporter/Version.props
 
-git add ./src/Version.props
+git add ./DraftJSExporter/Version.props
 
 git commit -m "release: new version ${VERSION}" -m "" -m "META: version:${VERSION}"
 
