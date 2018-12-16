@@ -33,5 +33,3 @@ git add ./src/Version.props
 git commit -m "release: new version ${VERSION}" -m "" -m "META: version:${VERSION}"
 
 git tag -a "v${VERSION}" -m ''
-
-git push origin --tags

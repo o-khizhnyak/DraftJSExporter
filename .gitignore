@@ -45,3 +45,5 @@ build/
 *.scc
 
 .idea
+
+Target/
