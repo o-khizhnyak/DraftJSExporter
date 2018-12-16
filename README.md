@@ -35,7 +35,7 @@ var html = exporter.Render(
 
 You can pass custom ExporterConfig object to change render settings.
 
-### `EntityDecorators`
+### EntityDecorators
 
 ```csharp
 var exporter = new Exporter(new ExporterConfig
