@@ -13,4 +13,4 @@ fi
 
 VERSION=$(grep "<Version>" ./DraftJSExporter/Version.props | sed -r "s#.*<Version>([0-9]+.[0-9]+.[0-9]+)</Version>.*#\1#")
 
-dotnet nuget push ./Target/DraftJSExporter.${VERSION}.nupkg -k $NUGET_API_KEY
+dotnet nuget push ./Target/DraftJSExporter.${VERSION}.nupkg -s https://api.nuget.org/v3/index.json -k $NUGET_API_KEY
