@@ -35,7 +35,8 @@ namespace DraftJSExporter.Defaults
 
         public string Pre { get; set; } = "pre";
 
-        public Element GenerateBlockElement(string type, int depth, string text = null, Element wrapper = null)
+        public Element GenerateBlockElement(string type, int depth, int prevDepth, string text = null, 
+            Element wrapper = null)
         {
             switch (type)
             {
@@ -62,12 +63,12 @@ namespace DraftJSExporter.Defaults
                 
                 case "unordered-list-item":
                     var ulWrapper = wrapper ?? new Element(UnorderedListItem.Wrapper, null, null, false, true);
-                    ulWrapper.AppendChild(UnorderedListItem.Element(depth, text));
+                    ulWrapper.AppendChild(UnorderedListItem.Element(depth, prevDepth, text, ulWrapper.Children.Count == 0));
                     return ulWrapper;
                 
                 case "ordered-list-item":
                     var olWrapper = wrapper ?? new Element(OrderedListItem.Wrapper, null, null, false, true);
-                    olWrapper.AppendChild(OrderedListItem.Element(depth, text));
+                    olWrapper.AppendChild(OrderedListItem.Element(depth, prevDepth, text, olWrapper.Children.Count == 0));
                     return olWrapper;
                 
                 case "blockquote":

@@ -23,10 +23,12 @@ namespace DraftJSExporter
             var contentState = JsonConvert.DeserializeObject<ContentState>(contentStateJson);
             var root = new Element();
             Element wrapper = null;
+            var prevDepth = -1;
 
             foreach (var block in contentState.Blocks)
             {
-                var element = block.ConvertToElement(_config, contentState.EntityMap, wrapper);
+                var element = block.ConvertToElement(_config, contentState.EntityMap, wrapper, prevDepth);
+                prevDepth = block.Depth;
                 if (element.Wrapper)
                 {
                     if (wrapper == null)

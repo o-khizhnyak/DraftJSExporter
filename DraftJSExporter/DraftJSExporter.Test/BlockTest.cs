@@ -22,7 +22,7 @@ namespace DraftJSExporter.Test
                 EntityRanges = new List<EntityRange>()
             };
 
-            var element = block.ConvertToElement(config, entityMap, null);
+            var element = block.ConvertToElement(config, entityMap, null, -1);
             
             Assert.Equal("div", element.Type);
             Assert.Equal(0, element.Attributes.Count);
@@ -39,7 +39,7 @@ namespace DraftJSExporter.Test
                 EntityRanges = new List<EntityRange>()
             };
 
-            element = block.ConvertToElement(config, entityMap, null);
+            element = block.ConvertToElement(config, entityMap, null, -1);
             
             Assert.Equal("h1", element.Type);
             Assert.Equal(0, element.Attributes.Count);
@@ -71,7 +71,7 @@ namespace DraftJSExporter.Test
                 EntityRanges = new List<EntityRange>()
             };
             
-            var element = block.ConvertToElement(config, entityMap, null);
+            var element = block.ConvertToElement(config, entityMap, null, -1);
             
             Assert.Equal("div", element.Type);
             Assert.Equal(0, element.Attributes.Count);
@@ -106,7 +106,7 @@ namespace DraftJSExporter.Test
                 EntityRanges = new List<EntityRange>()
             };
             
-            element = block.ConvertToElement(config, entityMap, null);
+            element = block.ConvertToElement(config, entityMap, null, -1);
             
             Assert.Equal("div", element.Type);
             Assert.Equal(0, element.Attributes.Count);
@@ -155,7 +155,7 @@ namespace DraftJSExporter.Test
                 EntityRanges = new List<EntityRange>()
             };
             
-            element = block.ConvertToElement(config, entityMap, null);
+            element = block.ConvertToElement(config, entityMap, null, -1);
             
             Assert.Equal("div", element.Type);
             Assert.Equal(0, element.Attributes.Count);
@@ -243,7 +243,7 @@ namespace DraftJSExporter.Test
                 }
             };
 
-            var element = block.ConvertToElement(config, entityMap, null);
+            var element = block.ConvertToElement(config, entityMap, null, -1);
             
             Assert.Equal("div", element.Type);
             Assert.Equal(null, element.Text);
@@ -282,7 +282,7 @@ namespace DraftJSExporter.Test
                 }
             };
             
-            element = block.ConvertToElement(config, entityMap, null);
+            element = block.ConvertToElement(config, entityMap, null, -1);
             
             Assert.Equal("div", element.Type);
             Assert.Equal(null, element.Text);
@@ -374,7 +374,7 @@ namespace DraftJSExporter.Test
                 }
             };
 
-            var element = block.ConvertToElement(config, entityMap, null);
+            var element = block.ConvertToElement(config, entityMap, null, -1);
             
             Assert.Equal("div", element.Type);
             Assert.Equal(null, element.Text);

@@ -156,6 +156,42 @@ namespace DraftJSExporter.Test
             ""data"": {}
         },
         {
+            ""key"": ""ef4jk"",
+            ""text"": ""List item 2.1"",
+            ""type"": ""unordered-list-item"",
+            ""depth"": 1,
+            ""inlineStyleRanges"": [],
+            ""entityRanges"": [],
+            ""data"": {}
+        },
+        {
+            ""key"": ""m3dhs"",
+            ""text"": ""List item 2.1.1"",
+            ""type"": ""unordered-list-item"",
+            ""depth"": 2,
+            ""inlineStyleRanges"": [],
+            ""entityRanges"": [],
+            ""data"": {}
+        },
+        {
+            ""key"": ""ev4jk"",
+            ""text"": ""List item 2.2"",
+            ""type"": ""unordered-list-item"",
+            ""depth"": 1,
+            ""inlineStyleRanges"": [],
+            ""entityRanges"": [],
+            ""data"": {}
+        },
+        {
+            ""key"": ""gfh5w"",
+            ""text"": ""List item 3"",
+            ""type"": ""unordered-list-item"",
+            ""depth"": 0,
+            ""inlineStyleRanges"": [],
+            ""entityRanges"": [],
+            ""data"": {}
+        },
+        {
             ""key"": ""4d5h"",
             ""text"": ""Plain text"",
             ""type"": ""unstyled"",
@@ -191,11 +227,23 @@ namespace DraftJSExporter.Test
     Text which contains <a href=""http://some-site.com"">style<strong>d link</strong></a> to something
 </div>
 <ul>
-    <li class=""list-item--depth-0"">
+    <li class=""list-item--depth-0 list-item--reset"">
         List item 1
     </li>
     <li class=""list-item--depth-0"">
         List item 2
+    </li>
+    <li class=""list-item--depth-1 list-item--reset"">
+        List item 2.1
+    </li>
+    <li class=""list-item--depth-2 list-item--reset"">
+        List item 2.1.1
+    </li>
+    <li class=""list-item--depth-1"">
+        List item 2.2
+    </li>
+    <li class=""list-item--depth-0"">
+        List item 3
     </li>
 </ul>
 <div>

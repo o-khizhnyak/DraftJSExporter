@@ -18,14 +18,15 @@ namespace DraftJSExporter
 
         public List<EntityRange> EntityRanges { get; set; }
 
-        public Element ConvertToElement(ExporterConfig config, Dictionary<int, Entity> entityMap, Element wrapper)
+        public Element ConvertToElement(ExporterConfig config, Dictionary<int, Entity> entityMap, Element wrapper, 
+            int prevDepth)
         {
             if (InlineStyleRanges.Count == 0 && EntityRanges.Count == 0)
             {
-                return config.BlockMap.GenerateBlockElement(Type, Depth, Text, wrapper);
+                return config.BlockMap.GenerateBlockElement(Type, Depth, prevDepth, Text, wrapper);
             }
             
-            var element = config.BlockMap.GenerateBlockElement(Type, Depth, null, wrapper);
+            var element = config.BlockMap.GenerateBlockElement(Type, Depth, prevDepth, null, wrapper);
             
             var indexesSet = new SortedSet<int>
             {
