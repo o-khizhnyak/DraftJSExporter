@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq.Expressions;
 using Newtonsoft.Json.Serialization;
 using Xunit;
 
@@ -168,6 +170,18 @@ namespace DraftJSExporter.Test
     </li>
 </ul>",
                 element13.Render());
+            
+            var element14 = new Element("br", null, null, true, false, true);
+            element14.AppendChild(new Element());
+            
+            Assert.Equal("<br />", element14.Render());
+            
+            var element15 = new Element("img", new Dictionary<string, string>
+            {
+                {"src", "qwe"}
+            }, null, true, false, true);
+            
+            Assert.Equal(@"<img src=""qwe"" />", element15.Render());
         }
     }
 }

@@ -10,7 +10,7 @@ namespace DraftJSExporter
         private const int TabWidth = 4;
 
         public static void AddOpeningTag(StringBuilder sb, string type, IReadOnlyDictionary<string, string> attributes, 
-            int level, bool inline, bool addTab)
+            int level, bool inline, bool addTab, bool selfClosing)
         {
             if (addTab)
             {
@@ -22,9 +22,14 @@ namespace DraftJSExporter
                 var attr = string.Join("", attributes.Select(a => new StringBuilder(" ")
                     .AppendFormat("{0}=\"{1}\"", a.Key, a.Value).ToString()).ToArray());
                 
-                sb.AppendFormat("<{0}{1}>", type, attr);
+                sb.AppendFormat("<{0}{1}", type, attr);
+
+                if (!selfClosing)
+                {
+                    sb.Append(">");
+                }
                 
-                if (!inline)
+                if (!inline && !selfClosing)
                 {
                     sb.AppendLine();
                 }
@@ -62,6 +67,15 @@ namespace DraftJSExporter
             if (!inline)
             {
                 sb.AppendLine();
+            }
+        }
+
+        public static void CloseTag(StringBuilder sb, bool parentIsLastChild)
+        {
+            sb.Append(" />");
+            if (!parentIsLastChild)
+            {
+                sb.AppendLine();                
             }
         }
     }

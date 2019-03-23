@@ -13,7 +13,8 @@ namespace DraftJSExporter.Test
             {
                 EntityDecorators = new Dictionary<string, Func<IReadOnlyDictionary<string, string>, Element>>
                 {
-                    {"LINK", pairs => new Element("a", pairs, null, true)}
+                    {"LINK", pairs => new Element("a", pairs, null, true)},
+                    {"IMAGE", pairs => new Element("img", pairs, null, false, false, true)}
                 }
             });
 
@@ -26,6 +27,13 @@ namespace DraftJSExporter.Test
             ""mutability"": ""MUTABLE"",
             ""data"": {
                 ""href"": ""http://some-site.com""
+            }
+        },
+        ""1"": {
+            ""type"": ""IMAGE"",
+            ""mutability"": ""MUTABLE"",
+            ""data"": {
+                ""src"": ""http://some-site-1.com""
             }
         }
     },
@@ -192,6 +200,19 @@ namespace DraftJSExporter.Test
             ""data"": {}
         },
         {
+            ""key"": ""dd92v"",
+            ""text"": "" "",
+            ""type"": ""atomic"",
+            ""depth"": 0,
+            ""inlineStyleRanges"": [],
+            ""entityRanges"": [{
+                ""offset"": 0,
+                ""length"": 1,
+                ""key"": 1
+            }],
+            ""data"": {}
+        },
+        {
             ""key"": ""4d5h"",
             ""text"": ""Plain text"",
             ""type"": ""unstyled"",
@@ -246,6 +267,7 @@ namespace DraftJSExporter.Test
         List item 3
     </li>
 </ul>
+<img src=""http://some-site-1.com"" />
 <div>
     Plain text
 </div>", result);

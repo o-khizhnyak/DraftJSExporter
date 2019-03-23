@@ -77,6 +77,9 @@ namespace DraftJSExporter.Defaults
                 case "pre":
                     return new Element(Pre, null, text);
                 
+                case "atomic":
+                    return new Element();
+                
                 default:
                     return new Element("div", null, text);
             }

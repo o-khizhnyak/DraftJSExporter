@@ -18,8 +18,10 @@ namespace DraftJSExporter
         
         public bool Wrapper { get; }
         
+        public bool SelfClosing { get; }
+        
         public Element(string type = null, IReadOnlyDictionary<string, string> attr = null, string text = null, 
-            bool inline = false, bool wrapper = false)
+            bool inline = false, bool wrapper = false, bool selfClosing = false)
         {
             Type = type;
             Attributes = attr ?? new Dictionary<string, string>();
@@ -27,42 +29,53 @@ namespace DraftJSExporter
             Inline = inline;
             Children = new List<Element>();
             Wrapper = wrapper;
+            SelfClosing = selfClosing;
         }
 
         public void AppendChild(Element child)
         {
-            Children.Add(child);
+            if (!SelfClosing)
+            {
+                Children.Add(child);                
+            }
         }
         
         public string Render()
         {
             var sb = new StringBuilder();
-            RenderElement(this, sb, 0, true, true, false);
+            RenderElement(this, sb, 0, true, true, false, true);
             return sb.ToString();
         }
 
         private static void RenderElement(Element element, StringBuilder sb, int level, bool addTab, bool lastChild, 
-            bool parentIsInline)
-        { 
-            TagBuilder.AddOpeningTag(sb, element.Type, element.Attributes, level, element.Inline, addTab);
-            
-            if (element.Text != null)
-            {
-                TagBuilder.AddText(sb, element.Text, element.Inline, level);                
-            }
+            bool parentIsInline, bool parentIsLastChild)
+        {
+            TagBuilder.AddOpeningTag(sb, element.Type, element.Attributes, level, element.Inline, addTab, element.SelfClosing);
 
-            var inline = false;
-            var childrenCount = element.Children.Count;
-            for (var i = 0; i < childrenCount; i++)
+            if (element.SelfClosing)
             {
-                var child = element.Children[i];
-                RenderElement(child, sb, element.Type == null && element.Text == null ? level : level + 1, 
-                    !(inline && child.Inline) && !(child.Type == null && !child.Inline) && !element.Inline, 
-                    i == childrenCount - 1, element.Inline);
-                inline = child.Inline;
+                TagBuilder.CloseTag(sb, parentIsLastChild);
             }
+            else
+            {            
+                if (element.Text != null)
+                {
+                    TagBuilder.AddText(sb, element.Text, element.Inline, level);         
+                }
 
-            TagBuilder.AddClosingTag(sb, element.Type, level, element.Inline, lastChild, parentIsInline);
+                var inline = false;
+                var childrenCount = element.Children.Count;
+                for (var i = 0; i < childrenCount; i++)
+                {
+                    var child = element.Children[i];
+                    RenderElement(child, sb, element.Type == null && element.Text == null ? level : level + 1, 
+                        !(inline && child.Inline) && !(child.Type == null && !child.Inline) && !element.Inline, 
+                        i == childrenCount - 1, element.Inline, lastChild);
+                    inline = child.Inline;
+                }
+
+                TagBuilder.AddClosingTag(sb, element.Type, level, element.Inline, lastChild, parentIsInline);
+            }
         }
     }
 }
