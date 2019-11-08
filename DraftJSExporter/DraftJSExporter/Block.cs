@@ -1,8 +1,5 @@
 using System.Collections.Generic;
-using System.Data.Common;
 using System.Linq;
-using DraftJSExporter.Defaults;
-using Newtonsoft.Json;
 
 namespace DraftJSExporter
 {
@@ -27,6 +24,8 @@ namespace DraftJSExporter
             }
             
             var element = config.BlockMap.GenerateBlockElement(Type, Depth, prevDepth, null, wrapper);
+
+            var container = element.Wrapper ? element.Children.Last() : element;
             
             var indexesSet = new SortedSet<int>
             {
@@ -87,7 +86,7 @@ namespace DraftJSExporter
 
                     if (openedEntity == null)
                     {
-                        element.AppendChild(child);
+                        container.AppendChild(child);
                     }
                 }
                 
@@ -101,7 +100,7 @@ namespace DraftJSExporter
                     if (nextIndex == openedEntityStopIndex)
                     {
                         openedEntity.AppendChild(child);
-                        element.AppendChild(openedEntity);
+                        container.AppendChild(openedEntity);
                         openedEntity = null;    
                     }
                 }
