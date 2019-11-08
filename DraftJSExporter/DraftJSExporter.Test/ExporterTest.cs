@@ -287,5 +287,14 @@ namespace DraftJSExporter.Test
     Plain text
 </div>", result);
         }
+
+        [Fact]
+        public void TestExporter_EmptyContent()
+        {
+            var exporter = new Exporter(new ExporterConfig());
+
+            var result = exporter.Render("{}");
+            Assert.Equal(string.Empty, result);
+        }
     }
 }
