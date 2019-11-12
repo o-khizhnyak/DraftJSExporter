@@ -21,6 +21,12 @@ namespace DraftJSExporter
             }
 
             var contentState = JsonConvert.DeserializeObject<ContentState>(contentStateJson);
+
+            if (contentState.Blocks == null)
+            {
+                return "";
+            }
+
             var root = new Element();
             Element wrapper = null;
             var prevDepth = -1;

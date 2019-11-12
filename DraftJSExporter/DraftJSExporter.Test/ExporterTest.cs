@@ -30,6 +30,13 @@ namespace DraftJSExporter.Test
             }
         },
         ""1"": {
+            ""type"": ""LINK"",
+            ""mutability"": ""MUTABLE"",
+            ""data"": {
+                ""href"": ""http://www.google.com/""
+            }
+        },
+        ""2"": {
             ""type"": ""IMAGE"",
             ""mutability"": ""MUTABLE"",
             ""data"": {
@@ -192,11 +199,19 @@ namespace DraftJSExporter.Test
         },
         {
             ""key"": ""gfh5w"",
-            ""text"": ""List item 3"",
+            ""text"": ""List item 3 with a styled link to something"",
             ""type"": ""unordered-list-item"",
             ""depth"": 0,
-            ""inlineStyleRanges"": [],
-            ""entityRanges"": [],
+            ""inlineStyleRanges"": [{
+                ""offset"": 24,
+                ""length"": 6,
+                ""style"": ""BOLD""
+            }],
+            ""entityRanges"": [{
+                ""offset"": 19,
+                ""length"": 11,
+                ""key"": 1
+            }],
             ""data"": {}
         },
         {
@@ -208,7 +223,7 @@ namespace DraftJSExporter.Test
             ""entityRanges"": [{
                 ""offset"": 0,
                 ""length"": 1,
-                ""key"": 1
+                ""key"": 2
             }],
             ""data"": {}
         },
@@ -264,13 +279,22 @@ namespace DraftJSExporter.Test
         List item 2.2
     </li>
     <li class=""list-item--depth-0"">
-        List item 3
+        List item 3 with a <a href=""http://www.google.com/"">style<strong>d link</strong></a> to something
     </li>
 </ul>
 <img src=""http://some-site-1.com"" />
 <div>
     Plain text
 </div>", result);
+        }
+
+        [Fact]
+        public void TestExporter_EmptyContent()
+        {
+            var exporter = new Exporter(new ExporterConfig());
+
+            var result = exporter.Render("{}");
+            Assert.Equal(string.Empty, result);
         }
     }
 }
