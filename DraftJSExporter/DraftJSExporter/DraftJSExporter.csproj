@@ -19,5 +19,5 @@
         <RepositoryUrl>https://github.com/o-khizhnyak/DraftJSExporter</RepositoryUrl>
     </PropertyGroup>
     
-    <Import Project="../Version.props"/>
+    <Import Project="../Version.props" />
 </Project>

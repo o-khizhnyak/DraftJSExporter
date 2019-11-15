@@ -1,23 +1,20 @@
-using System;
-using System.Collections.Generic;
-
 namespace DraftJSExporter.Defaults
 {
     public class BlockMap
     {
-        public string Unstyled { get; set; } = "div";
+        public string Unstyled { get; } = "div";
 
-        public string HeaderOne { get; set; } = "h1";
+        public string HeaderOne { get; } = "h1";
 
-        public string HeaderTwo { get; set; } = "h2";
+        public string HeaderTwo { get; } = "h2";
 
-        public string HeaderThree { get; set; } = "h3";
+        public string HeaderThree { get; } = "h3";
 
-        public string HeaderFour { get; set; } = "h4";
+        public string HeaderFour { get; } = "h4";
 
-        public string HeaderFive { get; set; } = "h5";
+        public string HeaderFive { get; } = "h5";
 
-        public string HeaderSix { get; set; } = "h6";
+        public string HeaderSix { get; } = "h6";
 
         public ListItem UnorderedListItem { get; set; } = new ListItem
         {
@@ -31,57 +28,56 @@ namespace DraftJSExporter.Defaults
             Wrapper = "ol"
         };
 
-        public string Blockquote { get; set; } = "blockquote";
+        public string Blockquote { get; } = "blockquote";
 
-        public string Pre { get; set; } = "pre";
+        public string Pre { get; } = "pre";
 
-        public Element GenerateBlockElement(string type, int depth, int prevDepth, string text = null, 
-            Element wrapper = null)
+        public string GetTagName(string type)
         {
             switch (type)
             {
                 case "unstyled":
-                    return new Element(Unstyled, null, text);
+                    return Unstyled;
                 
                 case "header-one":
-                    return new Element(HeaderOne, null, text);
+                    return HeaderOne;
                 
                 case "header-two":
-                    return new Element(HeaderTwo, null, text);
+                    return HeaderTwo;
                 
                 case "header-three":
-                    return new Element(HeaderThree, null, text);
+                    return HeaderThree;
                 
                 case "header-four":
-                    return new Element(HeaderFour, null, text);
+                    return HeaderFour;
                 
                 case "header-five":
-                    return new Element(HeaderFive, null, text);
+                    return HeaderFive;
                 
                 case "header-six":
-                    return new Element(HeaderSix, null, text);
+                    return HeaderSix;
                 
-                case "unordered-list-item":
-                    var ulWrapper = wrapper ?? new Element(UnorderedListItem.Wrapper, null, null, false, true);
-                    ulWrapper.AppendChild(UnorderedListItem.Element(depth, prevDepth, text, ulWrapper.Children.Count == 0));
-                    return ulWrapper;
-                
-                case "ordered-list-item":
-                    var olWrapper = wrapper ?? new Element(OrderedListItem.Wrapper, null, null, false, true);
-                    olWrapper.AppendChild(OrderedListItem.Element(depth, prevDepth, text, olWrapper.Children.Count == 0));
-                    return olWrapper;
+//                case "unordered-list-item":
+//                    var ulWrapper = wrapper ?? new HtmlElement(UnorderedListItem.Wrapper, null, null, false, true);
+//                    ulWrapper.AppendChild(UnorderedListItem.Element(depth, prevDepth, null, ulWrapper.Children.Count == 0));
+//                    return ulWrapper;
+//                
+//                case "ordered-list-item":
+//                    var olWrapper = wrapper ?? new HtmlElement(OrderedListItem.Wrapper, null, null, false, true);
+//                    olWrapper.AppendChild(OrderedListItem.Element(depth, prevDepth, null, olWrapper.Children.Count == 0));
+//                    return olWrapper;
                 
                 case "blockquote":
-                    return new Element(Blockquote, null, text);
+                    return Blockquote;
                 
                 case "pre":
-                    return new Element(Pre, null, text);
+                    return Pre;
                 
                 case "atomic":
-                    return new Element();
+                    return "";
                 
                 default:
-                    return new Element("div", null, text);
+                    return "div";
             }
         }
     }

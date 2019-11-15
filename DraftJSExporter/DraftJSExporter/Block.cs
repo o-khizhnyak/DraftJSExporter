@@ -15,17 +15,14 @@ namespace DraftJSExporter
 
         public List<EntityRange> EntityRanges { get; set; }
 
-        public Element ConvertToElement(ExporterConfig config, Dictionary<int, Entity> entityMap, Element wrapper, 
-            int prevDepth)
+        public TreeNode ConvertToTreeNode(Dictionary<int, Entity> entityMap, int prevDepth)
         {
+            var node = new TreeNode(Type, TreeNodeType.Block, Text, Depth, prevDepth);
+            
             if (InlineStyleRanges.Count == 0 && EntityRanges.Count == 0)
             {
-                return config.BlockMap.GenerateBlockElement(Type, Depth, prevDepth, Text, wrapper);
+                return node;
             }
-            
-            var element = config.BlockMap.GenerateBlockElement(Type, Depth, prevDepth, null, wrapper);
-
-            var container = element.Wrapper ? element.Children.Last() : element;
             
             var indexesSet = new SortedSet<int>
             {
@@ -41,7 +38,7 @@ namespace DraftJSExporter
 
             var indexes = indexesSet.ToList();
             
-            Element openedEntity = null;
+            TreeNode openedEntity = null;
             int? openedEntityStopIndex = null;
 
             for (var i = 0; i < indexes.Count - 1; i++)
@@ -49,7 +46,7 @@ namespace DraftJSExporter
                 var index = indexes[i];
                 var nextIndex = indexes[i + 1];
                 var text = Text.Substring(index, nextIndex - index);
-                Element child = null;
+                TreeNode child = null;
 
                 foreach (var styleRange in InlineStyleRanges)
                 {
@@ -57,19 +54,19 @@ namespace DraftJSExporter
                     { 
                         if (child == null)
                         {
-                            child = new Element(config.StyleMap[styleRange.Style], null, text, true);                            
+                            child = new TreeNode(styleRange.Style, TreeNodeType.Style, text, 0, 0, true);
                         }
                         else
                         {
                             child.Text = null;
-                            child.AppendChild(new Element(config.StyleMap[styleRange.Style], null, text, true));
+                            child.AppendChild(new TreeNode(styleRange.Style, TreeNodeType.Style, text, 0, 0, true));
                         }
                     } 
                 }
                 
                 if (child == null)
                 {
-                    child = new Element(null, null, text, true);
+                    child = new TreeNode(null, TreeNodeType.Block, text);
                 }
 
                 if (openedEntity == null)
@@ -79,14 +76,15 @@ namespace DraftJSExporter
                         if (index == entityRange.Offset)
                         {
                             var entity = entityMap[entityRange.Key];
-                            openedEntity = config.EntityDecorators[entity.Type](entity.Data);
+                            openedEntity = new TreeNode(entity.Type, TreeNodeType.Entity, null, 0, 
+                                0, false, entity.Data);
                             openedEntityStopIndex = entityRange.Offset + entityRange.Length;
                         }
                     }
 
                     if (openedEntity == null)
                     {
-                        container.AppendChild(child);
+                        node.AppendChild(child);
                     }
                 }
                 
@@ -100,13 +98,13 @@ namespace DraftJSExporter
                     if (nextIndex == openedEntityStopIndex)
                     {
                         openedEntity.AppendChild(child);
-                        container.AppendChild(openedEntity);
+                        node.AppendChild(openedEntity);
                         openedEntity = null;    
                     }
                 }
             }
 
-            return element;
+            return node;
         }
     }
 }

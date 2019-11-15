@@ -22,9 +22,9 @@ namespace DraftJSExporter.Test
                 EntityRanges = new List<EntityRange>()
             };
 
-            var element = block.ConvertToElement(config, entityMap, null, -1);
+            var element = block.ConvertToTreeNode(config, entityMap, null, -1);
             
-            Assert.Equal("div", element.Type);
+            Assert.Equal("div", element.Name);
             Assert.Equal(0, element.Attributes.Count);
             Assert.Equal("some text", element.Text);
             Assert.False(element.Inline);
@@ -39,9 +39,9 @@ namespace DraftJSExporter.Test
                 EntityRanges = new List<EntityRange>()
             };
 
-            element = block.ConvertToElement(config, entityMap, null, -1);
+            element = block.ConvertToTreeNode(config, entityMap, null, -1);
             
-            Assert.Equal("h1", element.Type);
+            Assert.Equal("h1", element.Name);
             Assert.Equal(0, element.Attributes.Count);
             Assert.Equal("some text", element.Text);
             Assert.False(element.Inline);
@@ -71,19 +71,19 @@ namespace DraftJSExporter.Test
                 EntityRanges = new List<EntityRange>()
             };
             
-            var element = block.ConvertToElement(config, entityMap, null, -1);
+            var element = block.ConvertToTreeNode(config, entityMap, null, -1);
             
-            Assert.Equal("div", element.Type);
+            Assert.Equal("div", element.Name);
             Assert.Equal(0, element.Attributes.Count);
             Assert.Null(element.Text);
             Assert.False(element.Inline);
             Assert.Equal(2, element.Children.Count);
-            Assert.Equal("u", element.Children[0].Type);
+            Assert.Equal("u", element.Children[0].Name);
             Assert.Equal("underlined", element.Children[0].Text);
             Assert.Equal(0, element.Children[0].Attributes.Count);
             Assert.True(element.Children[0].Inline);
             Assert.Empty(element.Children[0].Children);
-            Assert.Null(element.Children[1].Type);
+            Assert.Null(element.Children[1].Name);
             Assert.Equal(" text", element.Children[1].Text);
             Assert.Equal(0, element.Children[1].Attributes.Count);
             Assert.True(element.Children[1].Inline);
@@ -106,27 +106,27 @@ namespace DraftJSExporter.Test
                 EntityRanges = new List<EntityRange>()
             };
             
-            element = block.ConvertToElement(config, entityMap, null, -1);
+            element = block.ConvertToTreeNode(config, entityMap, null, -1);
             
-            Assert.Equal("div", element.Type);
+            Assert.Equal("div", element.Name);
             Assert.Equal(0, element.Attributes.Count);
             Assert.Null(element.Text);
             Assert.False(element.Inline);
             Assert.Equal(3, element.Children.Count);
             
-            Assert.Null(element.Children[0].Type);
+            Assert.Null(element.Children[0].Name);
             Assert.Equal(0, element.Children[0].Attributes.Count);
             Assert.Equal("text with ", element.Children[0].Text);
             Assert.True(element.Children[0].Inline);
             Assert.Empty(element.Children[0].Children);
             
-            Assert.Equal("u", element.Children[1].Type);
+            Assert.Equal("u", element.Children[1].Name);
             Assert.Equal(0, element.Children[1].Attributes.Count);
             Assert.Equal("underlined", element.Children[1].Text);
             Assert.True(element.Children[1].Inline);
             Assert.Empty(element.Children[1].Children);
             
-            Assert.Null(element.Children[2].Type);
+            Assert.Null(element.Children[2].Name);
             Assert.Equal(0, element.Children[2].Attributes.Count);
             Assert.Equal(" word", element.Children[2].Text);
             Assert.True(element.Children[2].Inline);
@@ -155,45 +155,45 @@ namespace DraftJSExporter.Test
                 EntityRanges = new List<EntityRange>()
             };
             
-            element = block.ConvertToElement(config, entityMap, null, -1);
+            element = block.ConvertToTreeNode(config, entityMap, null, -1);
             
-            Assert.Equal("div", element.Type);
+            Assert.Equal("div", element.Name);
             Assert.Equal(0, element.Attributes.Count);
             Assert.Null(element.Text);
             Assert.False(element.Inline);
             Assert.Equal(5, element.Children.Count);
             
-            Assert.Null(element.Children[0].Type);
+            Assert.Null(element.Children[0].Name);
             Assert.Equal(0, element.Children[0].Attributes.Count);
             Assert.Equal("text ", element.Children[0].Text);
             Assert.True(element.Children[0].Inline);
             Assert.Empty(element.Children[0].Children);
             
-            Assert.Equal("u", element.Children[1].Type);
+            Assert.Equal("u", element.Children[1].Name);
             Assert.Equal(0, element.Children[1].Attributes.Count);
             Assert.Equal("with ", element.Children[1].Text);
             Assert.True(element.Children[1].Inline);
             Assert.Empty(element.Children[1].Children);
             
-            Assert.Equal("u", element.Children[2].Type);
+            Assert.Equal("u", element.Children[2].Name);
             Assert.Equal(0, element.Children[2].Attributes.Count);
             Assert.Null(element.Children[2].Text);
             Assert.True(element.Children[2].Inline);
             Assert.Single(element.Children[2].Children);
             
-            Assert.Equal("strong", element.Children[2].Children[0].Type);
+            Assert.Equal("strong", element.Children[2].Children[0].Name);
             Assert.Equal(0, element.Children[2].Children[0].Attributes.Count);
             Assert.Equal("multiple", element.Children[2].Children[0].Text);
             Assert.True(element.Children[2].Children[0].Inline);
             Assert.Empty(element.Children[2].Children[0].Children);
             
-            Assert.Equal("strong", element.Children[3].Type);
+            Assert.Equal("strong", element.Children[3].Name);
             Assert.Equal(0, element.Children[3].Attributes.Count);
             Assert.Equal(" sty", element.Children[3].Text);
             Assert.True(element.Children[3].Inline);
             Assert.Empty(element.Children[3].Children);
             
-            Assert.Null(element.Children[4].Type);
+            Assert.Null(element.Children[4].Name);
             Assert.Equal(0, element.Children[4].Attributes.Count);
             Assert.Equal("les", element.Children[4].Text);
             Assert.True(element.Children[4].Inline);
@@ -205,10 +205,10 @@ namespace DraftJSExporter.Test
         {
             var config = new ExporterConfig
             {
-                EntityDecorators = new Dictionary<string, Func<IReadOnlyDictionary<string, string>, Element>>
+                EntityDecorators = new Dictionary<string, Func<IReadOnlyDictionary<string, string>, HtmlElement>>
                 {
-                    {"LINK", pairs => new Element("a", pairs, null, true)},
-                    {"IMAGE", pairs => new Element("img", pairs, null, false, false, true)}
+                    {"LINK", pairs => new HtmlElement("a", pairs, null, true)},
+                    {"IMAGE", pairs => new HtmlElement("img", pairs, null, false, false, true)}
                 }
             };
             
@@ -255,15 +255,15 @@ namespace DraftJSExporter.Test
                 }
             };
 
-            var element = block.ConvertToElement(config, entityMap, null, -1);
+            var element = block.ConvertToTreeNode(config, entityMap, null, -1);
             
-            Assert.Equal("div", element.Type);
+            Assert.Equal("div", element.Name);
             Assert.Null(element.Text);
             Assert.False(element.Inline);
             Assert.Equal(0, element.Attributes.Count);
             Assert.Single(element.Children);
             
-            Assert.Equal("a", element.Children[0].Type);
+            Assert.Equal("a", element.Children[0].Name);
             Assert.Null(element.Children[0].Text);
             Assert.Equal(1, element.Children[0].Attributes.Count);
             Assert.True(element.Children[0].Attributes.ContainsKey("href"));
@@ -271,7 +271,7 @@ namespace DraftJSExporter.Test
             Assert.Single(element.Children[0].Children);
             Assert.True(element.Children[0].Inline);
             
-            Assert.Null(element.Children[0].Children[0].Type);
+            Assert.Null(element.Children[0].Children[0].Name);
             Assert.Equal("link to example", element.Children[0].Children[0].Text);
             Assert.Equal(0, element.Children[0].Children[0].Attributes.Count);
             Assert.Empty(element.Children[0].Children[0].Children);
@@ -294,21 +294,21 @@ namespace DraftJSExporter.Test
                 }
             };
             
-            element = block.ConvertToElement(config, entityMap, null, -1);
+            element = block.ConvertToTreeNode(config, entityMap, null, -1);
             
-            Assert.Equal("div", element.Type);
+            Assert.Equal("div", element.Name);
             Assert.Null(element.Text);
             Assert.False(element.Inline);
             Assert.Equal(0, element.Attributes.Count);
             Assert.Equal(3, element.Children.Count);
             
-            Assert.Null(element.Children[0].Type);
+            Assert.Null(element.Children[0].Name);
             Assert.Equal("li", element.Children[0].Text);
             Assert.True(element.Children[0].Inline);
             Assert.Equal(0, element.Children[0].Attributes.Count);
             Assert.Empty(element.Children[0].Children);
             
-            Assert.Equal("a", element.Children[1].Type);
+            Assert.Equal("a", element.Children[1].Name);
             Assert.Null(element.Children[1].Text);
             Assert.True(element.Children[1].Inline);
             Assert.Equal(1, element.Children[1].Attributes.Count);
@@ -316,13 +316,13 @@ namespace DraftJSExporter.Test
             Assert.Equal("http://example.com", element.Children[1].Attributes["href"]);
             Assert.Single(element.Children[1].Children);
             
-            Assert.Null(element.Children[1].Children[0].Type);
+            Assert.Null(element.Children[1].Children[0].Name);
             Assert.Equal("nk to", element.Children[1].Children[0].Text);
             Assert.True(element.Children[1].Children[0].Inline);
             Assert.Equal(0, element.Children[1].Children[0].Attributes.Count);
             Assert.Empty(element.Children[1].Children[0].Children);
             
-            Assert.Null(element.Children[2].Type);
+            Assert.Null(element.Children[2].Name);
             Assert.Equal(" example", element.Children[2].Text);
             Assert.True(element.Children[2].Inline);
             Assert.Equal(0, element.Children[2].Attributes.Count);
@@ -345,15 +345,15 @@ namespace DraftJSExporter.Test
                 }
             };
             
-            element = block.ConvertToElement(config, entityMap, null, -1);
+            element = block.ConvertToTreeNode(config, entityMap, null, -1);
             
-            Assert.Null(element.Type);
+            Assert.Null(element.Name);
             Assert.Null(element.Text);
             Assert.False(element.Inline);
             Assert.Single(element.Children);
             Assert.Equal(0, element.Attributes.Count);
            
-            Assert.Equal("img", element.Children[0].Type);
+            Assert.Equal("img", element.Children[0].Name);
             Assert.Null(element.Children[0].Text);
             Assert.False(element.Children[0].Inline);
             Assert.Equal(1, element.Children[0].Attributes.Count);
@@ -367,9 +367,9 @@ namespace DraftJSExporter.Test
         {
             var config = new ExporterConfig
             {
-                EntityDecorators = new Dictionary<string, Func<IReadOnlyDictionary<string, string>, Element>>
+                EntityDecorators = new Dictionary<string, Func<IReadOnlyDictionary<string, string>, HtmlElement>>
                 {
-                    {"LINK", pairs => new Element("a", pairs, null, true)}
+                    {"LINK", pairs => new HtmlElement("a", pairs, null, true)}
                 }
             };
             
@@ -419,21 +419,21 @@ namespace DraftJSExporter.Test
                 }
             };
 
-            var element = block.ConvertToElement(config, entityMap, null, -1);
+            var element = block.ConvertToTreeNode(config, entityMap, null, -1);
             
-            Assert.Equal("div", element.Type);
+            Assert.Equal("div", element.Name);
             Assert.Null(element.Text);
             Assert.Equal(0, element.Attributes.Count);
             Assert.False(element.Inline);
             Assert.Equal(5, element.Children.Count);
             
-            Assert.Null(element.Children[0].Type);
+            Assert.Null(element.Children[0].Name);
             Assert.Equal("some text ", element.Children[0].Text);
             Assert.Equal(0, element.Children[0].Attributes.Count);
             Assert.True(element.Children[0].Inline);
             Assert.Empty(element.Children[0].Children);
             
-            Assert.Equal("a", element.Children[1].Type);
+            Assert.Equal("a", element.Children[1].Name);
             Assert.Null(element.Children[1].Text);
             Assert.Equal(1, element.Children[1].Attributes.Count);
             Assert.True(element.Children[1].Attributes.ContainsKey("href"));
@@ -441,31 +441,31 @@ namespace DraftJSExporter.Test
             Assert.True(element.Children[1].Inline);
             Assert.Equal(2, element.Children[1].Children.Count);
             
-            Assert.Equal("strong", element.Children[1].Children[0].Type);
+            Assert.Equal("strong", element.Children[1].Children[0].Name);
             Assert.Equal("with", element.Children[1].Children[0].Text);
             Assert.Equal(0, element.Children[1].Children[0].Attributes.Count);
             Assert.True(element.Children[1].Children[0].Inline);
             Assert.Empty(element.Children[1].Children[0].Children);
             
-            Assert.Null(element.Children[1].Children[1].Type);
+            Assert.Null(element.Children[1].Children[1].Name);
             Assert.Equal(" styles", element.Children[1].Children[1].Text);
             Assert.Equal(0, element.Children[1].Children[1].Attributes.Count);
             Assert.True(element.Children[1].Children[1].Inline);
             Assert.Empty(element.Children[1].Children[1].Children);
             
-            Assert.Null(element.Children[2].Type);
+            Assert.Null(element.Children[2].Name);
             Assert.Equal(" ", element.Children[2].Text);
             Assert.Equal(0, element.Children[2].Attributes.Count);
             Assert.True(element.Children[2].Inline);
             Assert.Empty(element.Children[2].Children);
             
-            Assert.Equal("em", element.Children[3].Type);
+            Assert.Equal("em", element.Children[3].Name);
             Assert.Equal("and", element.Children[3].Text);
             Assert.Equal(0, element.Children[3].Attributes.Count);
             Assert.True(element.Children[3].Inline);
             Assert.Empty(element.Children[3].Children);
             
-            Assert.Null(element.Children[4].Type);
+            Assert.Null(element.Children[4].Name);
             Assert.Equal(" entity", element.Children[4].Text);
             Assert.Equal(0, element.Children[4].Attributes.Count);
             Assert.True(element.Children[4].Inline);

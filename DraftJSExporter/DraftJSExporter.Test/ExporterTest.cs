@@ -9,12 +9,12 @@ namespace DraftJSExporter.Test
         [Fact]
         public void TestExporter()
         {
-            var exporter = new Exporter(new ExporterConfig
+            var exporter = new HtmlExporter(new ExporterConfig
             {
-                EntityDecorators = new Dictionary<string, Func<IReadOnlyDictionary<string, string>, Element>>
+                EntityDecorators = new Dictionary<string, Func<IReadOnlyDictionary<string, string>, HtmlElement>>
                 {
-                    {"LINK", pairs => new Element("a", pairs, null, true)},
-                    {"IMAGE", pairs => new Element("img", pairs, null, false, false, true)}
+                    {"LINK", pairs => new HtmlElement("a", pairs, null, true)},
+                    {"IMAGE", pairs => new HtmlElement("img", pairs, null, false, false, true)}
                 }
             });
 
@@ -291,7 +291,7 @@ namespace DraftJSExporter.Test
         [Fact]
         public void TestExporter_EmptyContent()
         {
-            var exporter = new Exporter(new ExporterConfig());
+            var exporter = new HtmlExporter(new ExporterConfig());
 
             var result = exporter.Render("{}");
             Assert.Equal(string.Empty, result);

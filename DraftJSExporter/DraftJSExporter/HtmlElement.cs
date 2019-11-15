@@ -4,13 +4,13 @@ using System.Text;
 
 namespace DraftJSExporter
 {
-    public class Element
+    public class HtmlElement
     {
         public string Type { get; }
 
         public IReadOnlyDictionary<string, string> Attributes { get; }
 
-        public List<Element> Children { get; }
+        public List<HtmlElement> Children { get; }
         
         public string Text { get; set; }
 
@@ -20,19 +20,19 @@ namespace DraftJSExporter
         
         public bool SelfClosing { get; }
         
-        public Element(string type = null, IReadOnlyDictionary<string, string> attr = null, string text = null, 
+        public HtmlElement(string type = null, IReadOnlyDictionary<string, string> attr = null, string text = null, 
             bool inline = false, bool wrapper = false, bool selfClosing = false)
         {
             Type = type;
             Attributes = attr ?? new Dictionary<string, string>();
             Text = text;
             Inline = inline;
-            Children = new List<Element>();
+            Children = new List<HtmlElement>();
             Wrapper = wrapper;
             SelfClosing = selfClosing;
         }
 
-        public void AppendChild(Element child)
+        public void AppendChild(HtmlElement child)
         {
             if (!SelfClosing)
             {
@@ -47,7 +47,7 @@ namespace DraftJSExporter
             return sb.ToString();
         }
 
-        private static void RenderElement(Element element, StringBuilder sb, int level, bool addTab, bool lastChild, 
+        private static void RenderElement(HtmlElement element, StringBuilder sb, int level, bool addTab, bool lastChild, 
             bool parentIsInline, bool parentIsLastChild)
         {
             TagBuilder.AddOpeningTag(sb, element.Type, element.Attributes, level, element.Inline, addTab, element.SelfClosing);

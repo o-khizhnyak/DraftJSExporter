@@ -6,8 +6,8 @@ namespace DraftJSExporter
 {
     public class ExporterConfig
     {
-        public Dictionary<string, Func<IReadOnlyDictionary<string, string>, Element>> EntityDecorators { get; set; } = 
-            new Dictionary<string, Func<IReadOnlyDictionary<string, string>, Element>>();
+        public Dictionary<string, Func<IReadOnlyDictionary<string, string>, HtmlElement>> EntityDecorators { get; set; } = 
+            new Dictionary<string, Func<IReadOnlyDictionary<string, string>, HtmlElement>>();
 
         public StyleMap StyleMap { get; set; } = new StyleMap();
 
