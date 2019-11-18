@@ -1,3 +1,5 @@
+using System.Linq;
+
 namespace DraftJSExporter.Defaults
 {
     public class BlockMap
@@ -16,69 +18,18 @@ namespace DraftJSExporter.Defaults
 
         public string HeaderSix { get; } = "h6";
 
-        public ListItem UnorderedListItem { get; set; } = new ListItem
-        {
-            Element = ListItem.DefaultListItem,
-            Wrapper = "ul"
-        };
+        public string UnorderedListItem { get; } = "li";
 
-        public ListItem OrderedListItem { get; set; } = new ListItem
-        {
-            Element = ListItem.DefaultListItem,
-            Wrapper = "ol"
-        };
+        public string OrderedListItem { get; } = "li";
 
         public string Blockquote { get; } = "blockquote";
 
         public string Pre { get; } = "pre";
+        
+        public string Atomic { get; } = null;
 
-        public string GetTagName(string type)
-        {
-            switch (type)
-            {
-                case "unstyled":
-                    return Unstyled;
-                
-                case "header-one":
-                    return HeaderOne;
-                
-                case "header-two":
-                    return HeaderTwo;
-                
-                case "header-three":
-                    return HeaderThree;
-                
-                case "header-four":
-                    return HeaderFour;
-                
-                case "header-five":
-                    return HeaderFive;
-                
-                case "header-six":
-                    return HeaderSix;
-                
-//                case "unordered-list-item":
-//                    var ulWrapper = wrapper ?? new HtmlElement(UnorderedListItem.Wrapper, null, null, false, true);
-//                    ulWrapper.AppendChild(UnorderedListItem.Element(depth, prevDepth, null, ulWrapper.Children.Count == 0));
-//                    return ulWrapper;
-//                
-//                case "ordered-list-item":
-//                    var olWrapper = wrapper ?? new HtmlElement(OrderedListItem.Wrapper, null, null, false, true);
-//                    olWrapper.AppendChild(OrderedListItem.Element(depth, prevDepth, null, olWrapper.Children.Count == 0));
-//                    return olWrapper;
-                
-                case "blockquote":
-                    return Blockquote;
-                
-                case "pre":
-                    return Pre;
-                
-                case "atomic":
-                    return "";
-                
-                default:
-                    return "div";
-            }
-        }
+        public string this[string propertyName] => 
+            (string)PropertyExpression<BlockMap>.GetValue(this,
+                propertyName.First().ToString().ToUpper() + propertyName.Substring(1).ToLower());
     }
 }

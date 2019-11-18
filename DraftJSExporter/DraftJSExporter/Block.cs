@@ -54,12 +54,12 @@ namespace DraftJSExporter
                     { 
                         if (child == null)
                         {
-                            child = new TreeNode(styleRange.Style, TreeNodeType.Style, text, 0, 0, true);
+                            child = new TreeNode(styleRange.Style, TreeNodeType.Style, text, 0, 0);
                         }
                         else
                         {
                             child.Text = null;
-                            child.AppendChild(new TreeNode(styleRange.Style, TreeNodeType.Style, text, 0, 0, true));
+                            child.AppendChild(new TreeNode(styleRange.Style, TreeNodeType.Style, text, 0, 0));
                         }
                     } 
                 }
@@ -77,7 +77,7 @@ namespace DraftJSExporter
                         {
                             var entity = entityMap[entityRange.Key];
                             openedEntity = new TreeNode(entity.Type, TreeNodeType.Entity, null, 0, 
-                                0, false, entity.Data);
+                                0, entity.Data);
                             openedEntityStopIndex = entityRange.Offset + entityRange.Length;
                         }
                     }

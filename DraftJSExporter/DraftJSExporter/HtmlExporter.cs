@@ -11,67 +11,69 @@ namespace DraftJSExporter
         }
         
         private ExporterConfig _config;
+        private bool openedList = false;
         
         public string Render(string contentStateJson)
         {
             var tree = new ContentStateToTreeConverter().Convert(contentStateJson);
             
             var sb = new StringBuilder();
-            RenderElement(sb, tree, 0, true, true, false, true);
+            RenderElement(sb, tree, 0,  true, false, true);
             return sb.ToString();
         }
 
-        private void RenderElement(StringBuilder sb, TreeNode node, int level, bool addTab, bool lastChild, 
+        private void RenderElement(StringBuilder sb, TreeNode node, int level, bool lastChild, 
             bool parentIsInline, bool parentIsLastChild)
         {
             string tagName;
             IReadOnlyDictionary<string, string> attributes = null;
             var selfClosing = false;
+            var isInline = false;
 
             switch (node.Type)
             {
                 case TreeNodeType.Block:
-                    tagName = _config.BlockMap.GetTagName(node.Name);
+                    tagName = _config.BlockMap[node.Name];
                     break;
                 case TreeNodeType.Style:
                     tagName = _config.StyleMap[node.Name];
+                    isInline = true;
                     break;
                 case TreeNodeType.Entity:
-                    var element = _config.EntityDecorators[node.Name](node.Data); 
+                    var element = _config.EntityDecorators[node.Name](node.Data);
                     tagName = element.Type;
                     selfClosing = element.SelfClosing;
                     attributes = element.Attributes;
+                    isInline = element.Inline;
                     break;
                 default:
-                    tagName = "";
+                    tagName = null;
                     break;
             }
             
-            TagBuilder.AddOpeningTag(sb, tagName, attributes, level, node.IsInline, addTab, selfClosing);
+            TagBuilder.AddOpeningTag(sb, tagName, attributes, level, isInline, selfClosing);
             
             if (selfClosing)
             {
-                TagBuilder.CloseTag(sb, parentIsLastChild);
+                TagBuilder.CloseTag(sb, parentIsLastChild, level);
             }
             else
             {
                 if (node.Text != null)
                 {
-                    TagBuilder.AddText(sb, node.Text, node.IsInline, level);         
+                    TagBuilder.AddText(sb, node.Text, isInline, level);         
                 }
                 
-                var inline = false;
                 var childrenCount = node.Children.Count;
+                
                 for (var i = 0; i < childrenCount; i++)
                 {
                     var child = node.Children[i];
-                    RenderElement(sb, child, node.Name == null && node.Text == null ? level : level + 1, 
-                        !(inline && child.IsInline) && !(child.Name == null && !child.IsInline) && !node.IsInline, 
-                        i == childrenCount - 1, node.IsInline, lastChild);
-                    inline = child.IsInline;
+                    RenderElement(sb, child, node.Name == null && node.Text == null ? level : level + 1,
+                        i == childrenCount - 1, isInline, lastChild);
                 }
 
-                TagBuilder.AddClosingTag(sb, tagName, level, node.IsInline, lastChild, parentIsInline);
+                TagBuilder.AddClosingTag(sb, tagName, level, isInline, lastChild, parentIsInline);
             }
         }
     }

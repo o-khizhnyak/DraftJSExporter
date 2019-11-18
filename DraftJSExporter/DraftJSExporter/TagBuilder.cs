@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,13 +9,8 @@ namespace DraftJSExporter
         private const int TabWidth = 4;
 
         public static void AddOpeningTag(StringBuilder sb, string type, IReadOnlyDictionary<string, string> attributes, 
-            int level, bool inline, bool addTab, bool selfClosing)
+            int level, bool inline, bool selfClosing)
         {
-            if (addTab)
-            {
-                sb.Append(new string(' ', TabWidth * level));                
-            }
-
             if (type != null)
             {
                 var attr = string.Join("", attributes.Select(a => new StringBuilder(" ")
@@ -32,6 +26,7 @@ namespace DraftJSExporter
                 if (!inline && !selfClosing)
                 {
                     sb.AppendLine();
+                    sb.Append(new string(' ', TabWidth * (level + 1)));
                 }
             }
         }
@@ -52,6 +47,7 @@ namespace DraftJSExporter
             if ((!inline || lastChild) && !(!inline && type == null) && !(lastChild && level == 0) && !parentIsInline)
             {
                 sb.AppendLine();
+                sb.Append(new string(' ', TabWidth * level));
             }
         }
 
@@ -67,15 +63,17 @@ namespace DraftJSExporter
             if (!inline)
             {
                 sb.AppendLine();
+                sb.Append(new string(' ', TabWidth * level));
             }
         }
 
-        public static void CloseTag(StringBuilder sb, bool parentIsLastChild)
+        public static void CloseTag(StringBuilder sb, bool parentIsLastChild, int level)
         {
             sb.Append(" />");
             if (!parentIsLastChild)
             {
-                sb.AppendLine();                
+                sb.AppendLine();  
+                sb.Append(new string(' ', TabWidth * level));
             }
         }
     }
