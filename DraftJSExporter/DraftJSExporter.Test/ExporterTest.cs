@@ -9,7 +9,7 @@ namespace DraftJSExporter.Test
         [Fact]
         public void TestExporter()
         {
-            var exporter = new HtmlDraftJSExporter(new ExporterConfig
+            var exporter = new HtmlDraftJSExporter(new DraftJsExporterConfig
             {
                 EntityDecorators = new Dictionary<string, Func<IReadOnlyDictionary<string, string>, HtmlElement>>
                 {
@@ -291,7 +291,7 @@ namespace DraftJSExporter.Test
         [Fact]
         public void TestExporter_EmptyContent()
         {
-            var exporter = new HtmlDraftJSExporter(new ExporterConfig());
+            var exporter = new HtmlDraftJSExporter(new DraftJsExporterConfig());
 
             var result = exporter.Render("{}");
             Assert.Equal(string.Empty, result);

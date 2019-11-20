@@ -27,16 +27,24 @@ namespace DraftJSExporter
     }
 
     public abstract class BlockTreeNode: DraftJSTreeNode
-    {   
+    {
     }
     
     public abstract class StyleTreeNode: DraftJSTreeNode
     {
     }
 
-    public abstract class EntityTreeNode : DraftJSTreeNode
+    public class EntityTreeNode : DraftJSTreeNode
     {
         public IReadOnlyDictionary<string, string> Data { get; set; }
+    }
+
+    public class TextTreeNode : DraftJSTreeNode
+    {
+        public TextTreeNode(string text)
+        {
+            Text = text;
+        }
     }
 
     public class UnstyledBlock : BlockTreeNode
@@ -72,11 +80,11 @@ namespace DraftJSExporter
         public int Depth { get; set; }
     }
 
-    public class UnorderedListItem : ListItemBlock
+    public class UnorderedListItemBlock : ListItemBlock
     {
     }
     
-    public class OrderedListItem : ListItemBlock
+    public class OrderedListItemBlock : ListItemBlock
     {
     }
     
