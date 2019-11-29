@@ -2,12 +2,12 @@ namespace DraftJSExporter
 {
     public class HtmlDraftJSExporter
     {
-        public HtmlDraftJSExporter(DraftJsExporterConfig config)
+        public HtmlDraftJSExporter(HtmlDraftJsExporterConfig config)
         {
             _config = config;
         }
         
-        private DraftJsExporterConfig _config;
+        private HtmlDraftJsExporterConfig _config;
         
         public string Render(string contentStateJson)
         {

@@ -99,10 +99,7 @@ namespace DraftJSExporter
                         if (index == entityRange.Offset)
                         {
                             var entity = entityMap[entityRange.Key];
-                            openedEntity = new EntityTreeNode();
-                            
-                            openedEntity = new TreeNode(entity.Type, TreeNodeType.Entity, null, 0, 
-                                0, entity.Data);
+                            openedEntity = new EntityTreeNode(entity.Type, entity.Data);
                             openedEntityStopIndex = entityRange.Offset + entityRange.Length;
                         }
                     }

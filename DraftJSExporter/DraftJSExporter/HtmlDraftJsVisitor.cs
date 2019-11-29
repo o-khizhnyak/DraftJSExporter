@@ -5,9 +5,9 @@ namespace DraftJSExporter
     public class HtmlDraftJsVisitor : DraftJsVisitor
     {
         private readonly HtmlBuilder _builder;
-        private readonly DraftJsExporterConfig _config;
+        private readonly HtmlDraftJsExporterConfig _config;
         
-        public HtmlDraftJsVisitor(DraftJsExporterConfig config)
+        public HtmlDraftJsVisitor(HtmlDraftJsExporterConfig config)
         {
             _builder = new HtmlBuilder();
             _config = config;

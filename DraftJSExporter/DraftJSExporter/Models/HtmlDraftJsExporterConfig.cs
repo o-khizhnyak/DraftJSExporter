@@ -4,7 +4,7 @@ using DraftJSExporter.Defaults;
 
 namespace DraftJSExporter
 {
-    public class DraftJsExporterConfig
+    public class HtmlDraftJsExporterConfig
     {
         public Dictionary<string, Func<IReadOnlyDictionary<string, string>, HtmlElement>> EntityDecorators { get; set; } = 
             new Dictionary<string, Func<IReadOnlyDictionary<string, string>, HtmlElement>>();
