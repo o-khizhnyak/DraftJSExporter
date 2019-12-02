@@ -1,20 +1,49 @@
 using System;
+using System.Buffers.Text;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
-using Newtonsoft.Json;
+using System.Text.Json;
 
 namespace DraftJSExporter
 {
+    public class IntDictionaryJsonConverter : CustomDictionaryJsonConverter<int>
+    {
+        protected override int ParseKey(ref Utf8JsonReader reader)
+        {
+            var propertyName = Read(ref reader);
+            if (!Utf8Parser.TryParse(propertyName, out int value, out var bytesConsumed)
+                || bytesConsumed != propertyName.Length)
+            {
+                throw new InvalidOperationException("Failed to parse GUID key");
+            }
+            return value;
+        }
+
+        protected override void WriteKey(Utf8JsonWriter writer, int key)
+        {
+            writer.WritePropertyName(key.ToString(CultureInfo.InvariantCulture));
+        }
+    }
     public class ContentStateToTreeConverter
     {
+        private static readonly JsonSerializerOptions JsonSerializerOptions = new JsonSerializerOptions
+        {
+            PropertyNameCaseInsensitive = true,
+            Converters =
+            {
+                new IntDictionaryJsonConverter()
+            }
+        };
+
         public DraftJSRootNode Convert(string contentStateJson)
         {
-            if (contentStateJson == null)
+            if (string.IsNullOrWhiteSpace(contentStateJson))
             {
                 return null;
             }
 
-            var contentState = JsonConvert.DeserializeObject<ContentState>(contentStateJson);
+            var contentState = JsonSerializer.Deserialize<ContentState>(contentStateJson, JsonSerializerOptions);
 
             if (contentState.Blocks == null)
             {
@@ -22,26 +51,24 @@ namespace DraftJSExporter
             }
             
             var nodes = new List<DraftJSTreeNode>();
-            var prevDepth = -1;
 
             foreach (var block in contentState.Blocks)
             {
-                var node = ConvertBlockToTreeNode(block, contentState.EntityMap, prevDepth);
-                prevDepth = block.Depth;
+                var node = ConvertBlockToTreeNode(block, contentState.EntityMap);
                 nodes.Add(node);
             }
 
             return new DraftJSRootNode(nodes);
         }
 
-        private DraftJSTreeNode ConvertBlockToTreeNode(Block block, IReadOnlyDictionary<int, Entity> entityMap, int prevDepth)
+        private DraftJSTreeNode ConvertBlockToTreeNode(Block block, IReadOnlyDictionary<int, Entity> entityMap)
         {
-            var node = GetBlockTreeNode(block.Type);
-            node.Text = block.Text;
+            var blockNode = GetBlockTreeNode(block.Type);
             
             if (block.InlineStyleRanges.Count == 0 && block.EntityRanges.Count == 0)
             {
-                return node;
+                blockNode.Text = block.Text;
+                return blockNode;
             }
             
             var indexesSet = new SortedSet<int>
@@ -87,11 +114,6 @@ namespace DraftJSExporter
                     } 
                 }
                 
-                if (child == null)
-                {
-                    child = new TextTreeNode(text);
-                }
-
                 if (openedEntity == null)
                 {
                     foreach (var entityRange in block.EntityRanges)
@@ -106,27 +128,40 @@ namespace DraftJSExporter
 
                     if (openedEntity == null)
                     {
-                        node.AppendChild(child);
+                        blockNode.AppendChild(child ?? new TextTreeNode(text));
                     }
                 }
                 
                 if (openedEntity != null && openedEntityStopIndex != null)
                 {
-                    if (nextIndex < openedEntityStopIndex)
+                    if (nextIndex < openedEntityStopIndex || nextIndex == openedEntityStopIndex)
                     {
-                        openedEntity.AppendChild(child);
+                        if (child == null)
+                        {
+                            if (openedEntity.Children.Count == 0)
+                            {
+                                openedEntity.Text = text;
+                            }
+                            else
+                            {
+                                openedEntity.AppendChild(new TextTreeNode(text));
+                            }
+                        }
+                        else
+                        {
+                            openedEntity.AppendChild(child);
+                        }
                     }
 
                     if (nextIndex == openedEntityStopIndex)
                     {
-                        openedEntity.AppendChild(child);
-                        node.AppendChild(openedEntity);
+                        blockNode.AppendChild(openedEntity);
                         openedEntity = null;    
                     }
                 }
             }
 
-            return node;
+            return blockNode;
         }
 
         private BlockTreeNode GetBlockTreeNode(string type)
@@ -135,21 +170,21 @@ namespace DraftJSExporter
             {
                 case "unstyled":
                     return new UnstyledBlock();
-                case "headerOne":
+                case "header-one":
                     return new HeaderOneBlock();
-                case "headerTwo":
+                case "header-two":
                     return new HeaderTwoBlock();
-                case "headerThree":
+                case "header-three":
                     return new HeaderThreeBlock();
-                case "headerFour":
+                case "header-four":
                     return new HeaderFourBlock();
-                case "headerFive":
+                case "header-five":
                     return new HeaderFiveBlock();
-                case "headerSix":
+                case "header-six":
                     return new HeaderSixBlock();
-                case "unorderedListItem":
+                case "unordered-list-item":
                     return new UnorderedListItemBlock();
-                case "orderedListItem":
+                case "ordered-list-item":
                     return new OrderedListItemBlock();
                 case "blockquote":
                     return new BlockquoteBlock();
@@ -166,36 +201,36 @@ namespace DraftJSExporter
         {
             switch (type)
             {
-                case "bold":
+                case "BOLD":
                     return new BoldStyleTreeNode();
-                case "code":
+                case "CODE":
                     return new CodeStyleTreeNode();
-                case "italic":
+                case "ITALIC":
                     return new ItalicStyleTreeNode();
-                case "underline":
+                case "UNDERLINE":
                     return new UnderlineStyleTreeNode();
-                case "strikethrough":
+                case "STRIKETHROUGH":
                     return new StrikethroughStyleTreeNode();
-                case "superscript":
+                case "SUPERSCRIPT":
                     return new SuperscriptStyleTreeNode();
-                case "subscript":
+                case "SUBSCRIPT":
                     return new SubscriptStyleTreeNode();
-                case "mark":
+                case "MARK":
                     return new MarkStyleTreeNode();
-                case "quotation":
+                case "QUOTATION":
                     return new QuotationStyleTreeNode();
-                case "small":
+                case "SMALL":
                     return new SmallStyleTreeNode();
-                case "sample":
+                case "SAMPLE":
                     return new SampleStyleTreeNode();
-                case "insert":
+                case "INSERT":
                     return new InsertStyleTreeNode();
-                case "delete":
+                case "DELETE":
                     return new DeleteStyleTreeNode();
-                case "keyboard":
+                case "KEYBOARD":
                     return new KeyboardStyleTreeNode();
                 default:
-                    throw new Exception($"Unknown style type: {type}");
+                    throw new Exception($"Unknown style type: {type}"); 
             }
         }
     }

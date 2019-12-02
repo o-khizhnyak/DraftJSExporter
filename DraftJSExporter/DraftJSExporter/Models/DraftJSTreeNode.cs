@@ -28,6 +28,7 @@ namespace DraftJSExporter
 
     public abstract class BlockTreeNode: DraftJSTreeNode
     {
+        public int Depth { get; set; }
     }
     
     public abstract class StyleTreeNode: DraftJSTreeNode
@@ -82,16 +83,11 @@ namespace DraftJSExporter
     {
     }
     
-    public abstract class ListItemBlock : BlockTreeNode
-    {
-        public int Depth { get; set; }
-    }
-
-    public class UnorderedListItemBlock : ListItemBlock
+    public class UnorderedListItemBlock : BlockTreeNode
     {
     }
     
-    public class OrderedListItemBlock : ListItemBlock
+    public class OrderedListItemBlock : BlockTreeNode
     {
     }
     

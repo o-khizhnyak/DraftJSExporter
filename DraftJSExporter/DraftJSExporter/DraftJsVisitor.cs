@@ -5,13 +5,13 @@ namespace DraftJSExporter
 {
     public class DraftJsVisitor
     {
-        public virtual void Visit(DraftJSTreeNode node)
+        public virtual void Visit(DraftJSTreeNode node, DraftJSTreeNode prevNode)
         {
             if (node == null) throw new ArgumentNullException(nameof(node));
             switch (node)
             {
                 case BlockTreeNode blockTreeNode:
-                    VisitBlock(blockTreeNode);
+                    VisitBlock(blockTreeNode, prevNode is BlockTreeNode prevBlockTreeNode ? prevBlockTreeNode : null);
                     break;
                 case StyleTreeNode styleTreeNode:
                     VisitStyle(styleTreeNode);
@@ -35,13 +35,15 @@ namespace DraftJSExporter
         
         protected virtual void VisitArray(IEnumerable<DraftJSTreeNode> nodes)
         {
+            DraftJSTreeNode prevNode = null;
             foreach (var node in nodes)
             {
-                Visit(node);
+                Visit(node, prevNode);
+                prevNode = node;
             }
         }
         
-        protected virtual void VisitBlock(BlockTreeNode node)
+        protected virtual void VisitBlock(BlockTreeNode node, BlockTreeNode prevNode)
         {
             switch (node)
             {
@@ -67,10 +69,12 @@ namespace DraftJSExporter
                     VisitHeaderSix(headerSixBlock);
                     break;
                 case UnorderedListItemBlock unorderedListItemBlock:
-                    VisitUnorderedListItem(unorderedListItemBlock);
+                    VisitUnorderedListItem(unorderedListItemBlock, 
+                        prevNode is UnorderedListItemBlock prevUnorderedListItem ? prevUnorderedListItem : null);
                     break;
                 case OrderedListItemBlock orderedListItemBlock:
-                    VisitOrderedListItem(orderedListItemBlock);
+                    VisitOrderedListItem(orderedListItemBlock, 
+                        prevNode is OrderedListItemBlock prevOrderedListItem ? prevOrderedListItem : null);
                     break;
                 case BlockquoteBlock blockquoteBlock:
                     VisitBlockquote(blockquoteBlock);
@@ -173,28 +177,11 @@ namespace DraftJSExporter
         {
         }
         
-        protected virtual void VisitListItem(ListItemBlock block)
-        {
-            switch (block)
-            {
-                case null:
-                    throw new ArgumentNullException(nameof(block));
-                case OrderedListItemBlock orderedListItem:
-                    VisitOrderedListItem(orderedListItem);
-                    break;
-                case UnorderedListItemBlock unorderedListItem:
-                    VisitUnorderedListItem(unorderedListItem);
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(block));
-            }
-        }
-
-        protected virtual void VisitUnorderedListItem(UnorderedListItemBlock unorderedListItemBlock)
+        protected virtual void VisitUnorderedListItem(UnorderedListItemBlock node, UnorderedListItemBlock prevNode)
         {
         }
 
-        protected virtual void VisitOrderedListItem(OrderedListItemBlock orderedListItemBlock)
+        protected virtual void VisitOrderedListItem(OrderedListItemBlock node, OrderedListItemBlock prevNode)
         {
         }
 

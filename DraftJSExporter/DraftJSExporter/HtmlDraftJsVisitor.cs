@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using DraftJSExporter.Defaults;
 
 namespace DraftJSExporter
 {
@@ -40,7 +41,7 @@ namespace DraftJSExporter
                 {
                     _builder.AddClosingTag("ul", false);
                 }
-                Visit(node);
+                Visit(node, prev);
 
                 prev = node;
             }
@@ -48,142 +49,155 @@ namespace DraftJSExporter
 
         protected override void VisitEntity(EntityTreeNode node)
         {
-            
+            var element = _config.EntityDecorators[node.Type](node.Data);
+            RenderNode(node, element.Type, element.Inline, element.Attributes);
+        }
+
+        protected override void VisitTextNode(TextTreeNode node)
+        {
+            RenderNode(node, null, true);
         }
 
         protected override void VisitUnstyled(UnstyledBlock node)
         {
-            RenderBlock(_config.BlockMap.Unstyled, node, false);
+            RenderBlock(node, _config.BlockMap.Unstyled);
         }
         
         protected override void VisitHeaderOne(HeaderOneBlock node)
         {
-            RenderBlock(_config.BlockMap.HeaderOne, node, false);
+            RenderBlock(node, _config.BlockMap.HeaderOne);
         }
         
         protected override void VisitHeaderTwo(HeaderTwoBlock node)
         {
-            RenderBlock(_config.BlockMap.HeaderTwo, node, false);
+            RenderBlock(node, _config.BlockMap.HeaderTwo);
         }
         
         protected override void VisitHeaderThree(HeaderThreeBlock node)
         {
-            RenderBlock(_config.BlockMap.HeaderThree, node, false);
+            RenderBlock(node, _config.BlockMap.HeaderThree);
         }
         
         protected override void VisitHeaderFour(HeaderFourBlock node)
         {
-            RenderBlock(_config.BlockMap.HeaderFour, node, false);
+            RenderBlock(node, _config.BlockMap.HeaderFour);
         }
         
         protected override void VisitHeaderFive(HeaderFiveBlock node)
         {
-            RenderBlock(_config.BlockMap.HeaderFive, node, false);
+            RenderBlock(node, _config.BlockMap.HeaderFive);
         }
         
         protected override void VisitHeaderSix(HeaderSixBlock node)
         {
-            RenderBlock(_config.BlockMap.HeaderSix, node, false);
+            RenderBlock(node, _config.BlockMap.HeaderSix);
         }
         
-        protected override void VisitUnorderedListItem(UnorderedListItemBlock node)
+        protected override void VisitUnorderedListItem(UnorderedListItemBlock node, UnorderedListItemBlock prevNode)
         {
-            RenderBlock(_config.BlockMap.UnorderedListItem, node, false);
+            RenderBlock(node, _config.BlockMap.UnorderedListItem, prevNode?.Depth ?? 0, prevNode == null);
         }
 
-        protected override void VisitOrderedListItem(OrderedListItemBlock node)
+        protected override void VisitOrderedListItem(OrderedListItemBlock node, OrderedListItemBlock prevNode)
         {
-            RenderBlock(_config.BlockMap.OrderedListItem, node, false);
+            RenderBlock(node, _config.BlockMap.OrderedListItem, prevNode?.Depth ?? 0, prevNode == null);
         }
         
         protected override void VisitBlockquote(BlockquoteBlock node)
         {
-            RenderBlock(_config.BlockMap.Blockquote, node, false);
+            RenderBlock(node, _config.BlockMap.Blockquote);
         }
         
         protected override void VisitPre(PreBlock node)
         {
-            RenderBlock(_config.BlockMap.Pre, node, false);
+            RenderBlock(node, _config.BlockMap.Pre);
         }
         
         protected override void VisitAtomic(AtomicBlock node)
         {
-            RenderBlock(_config.BlockMap.Atomic, node, false);
+            RenderBlock(node, _config.BlockMap.Atomic);
         }
 
         protected override void VisitBoldStyle(BoldStyleTreeNode node)
         {
-            RenderBlock(_config.StyleMap.Bold, node, true);
+            RenderNode(node, _config.StyleMap.Bold, true);
         }
         
         protected override void VisitCodeStyle(CodeStyleTreeNode node)
         {
-            RenderBlock(_config.StyleMap.Code, node, true);
+            RenderNode(node, _config.StyleMap.Code, true);
         }
         
         protected override void VisitItalicStyle(ItalicStyleTreeNode node)
         {
-            RenderBlock(_config.StyleMap.Italic, node, true);
+            RenderNode(node, _config.StyleMap.Italic, true);
         }
         
         protected override void VisitUnderlineStyle(UnderlineStyleTreeNode node)
         {
-            RenderBlock(_config.StyleMap.Underline, node, true);
+            RenderNode(node, _config.StyleMap.Underline, true);
         }
         
         protected override void VisitStrikethroughStyle(StrikethroughStyleTreeNode node)
         {
-            RenderBlock(_config.StyleMap.Strikethrough, node, true);
+            RenderNode(node, _config.StyleMap.Strikethrough, true);
         }
         
         protected override void VisitSuperscriptStyle(SuperscriptStyleTreeNode node)
         {
-            RenderBlock(_config.StyleMap.Superscript, node, true);
+            RenderNode(node, _config.StyleMap.Superscript, true);
         }
         
         protected override void VisitSubscriptStyle(SubscriptStyleTreeNode node)
         {
-            RenderBlock(_config.StyleMap.Subscript, node, true);
+            RenderNode(node, _config.StyleMap.Subscript, true);
         }
         
         protected override void VisitMarkStyle(MarkStyleTreeNode node)
         {
-            RenderBlock(_config.StyleMap.Mark, node, true);
+            RenderNode(node, _config.StyleMap.Mark, true);
         }
         
         protected override void VisitQuotationStyle(QuotationStyleTreeNode node)
         {
-            RenderBlock(_config.StyleMap.Quotation, node, true);
+            RenderNode(node, _config.StyleMap.Quotation, true);
         }
         
         protected override void VisitSmallStyle(SmallStyleTreeNode node)
         {
-            RenderBlock(_config.StyleMap.Small, node, true);
+            RenderNode(node, _config.StyleMap.Small, true);
         }
         
         protected override void VisitSampleStyle(SampleStyleTreeNode node)
         {
-            RenderBlock(_config.StyleMap.Sample, node, true);
+            RenderNode(node, _config.StyleMap.Sample, true);
         }
         
         protected override void VisitInsertStyle(InsertStyleTreeNode node)
         {
-            RenderBlock(_config.StyleMap.Insert, node, true);
+            RenderNode(node, _config.StyleMap.Insert, true);
         }
         
         protected override void VisitDeleteStyle(DeleteStyleTreeNode node)
         {
-            RenderBlock(_config.StyleMap.Delete, node, true);
+            RenderNode(node, _config.StyleMap.Delete, true);
         }
         
         protected override void VisitKeyboardStyle(KeyboardStyleTreeNode node)
         {
-            RenderBlock(_config.StyleMap.Keyboard, node, true);
+            RenderNode(node, _config.StyleMap.Keyboard, true);
         }
 
-        private void RenderBlock(string tagName, DraftJSTreeNode node, bool inline)
+        private void RenderBlock(BlockTreeNode node, CreateHtmlElement createHtmlElement, int prevDepth = 0, 
+            bool firstChild = false)
         {
-            _builder.AddOpeningTag(tagName, null, inline, false);
+            var htmlElement = createHtmlElement(node.Depth, prevDepth, firstChild);
+            RenderNode(node, htmlElement.Type, false, htmlElement.Attributes);
+        }
+
+        private void RenderNode(DraftJSTreeNode node, string tagName,  bool inline, IReadOnlyDictionary<string, string> attributes = null)
+        {
+            _builder.AddOpeningTag(tagName, attributes, inline, false);
             _builder.AddText(node.Text);
             VisitChildren(node);
             _builder.AddClosingTag(tagName, inline);
