@@ -25,19 +25,19 @@ namespace DraftJSExporter
             DraftJSTreeNode prev = null;
             foreach (var node in nodes)
             {
-                if (node is OrderedListItemBlock _ && !(prev is OrderedListItemBlock))
+                if (node is OrderedListItemBlock && !(prev is OrderedListItemBlock))
                 {
                     _builder.AddOpeningTag("ol", null, false, false);
                 }
-                else if (node is UnorderedListItemBlock _ && !(prev is UnorderedListItemBlock))
+                else if (node is UnorderedListItemBlock && !(prev is UnorderedListItemBlock))
                 {
                     _builder.AddOpeningTag("ul", null, false, false);
                 }
-                else if (prev is OrderedListItemBlock)
+                else if (!(node is OrderedListItemBlock) && prev is OrderedListItemBlock)
                 {
                     _builder.AddClosingTag("ol", false);
                 }
-                else if(prev is UnorderedListItemBlock)
+                else if (!(node is UnorderedListItemBlock) && prev is UnorderedListItemBlock)
                 {
                     _builder.AddClosingTag("ul", false);
                 }
@@ -50,7 +50,7 @@ namespace DraftJSExporter
         protected override void VisitEntity(EntityTreeNode node)
         {
             var element = _config.EntityDecorators[node.Type](node.Data);
-            RenderNode(node, element.Type, element.Inline, element.Attributes);
+            RenderNode(node, element.Type, element.Inline, element.Attributes, element.SelfClosing);
         }
 
         protected override void VisitTextNode(TextTreeNode node)
@@ -195,12 +195,20 @@ namespace DraftJSExporter
             RenderNode(node, htmlElement.Type, false, htmlElement.Attributes);
         }
 
-        private void RenderNode(DraftJSTreeNode node, string tagName,  bool inline, IReadOnlyDictionary<string, string> attributes = null)
+        private void RenderNode(DraftJSTreeNode node, string tagName,  bool inline, 
+            IReadOnlyDictionary<string, string> attributes = null, bool selfClosing = false)
         {
-            _builder.AddOpeningTag(tagName, attributes, inline, false);
-            _builder.AddText(node.Text);
-            VisitChildren(node);
-            _builder.AddClosingTag(tagName, inline);
+            _builder.AddOpeningTag(tagName, attributes, inline, selfClosing);
+            if (selfClosing)
+            {
+                _builder.CloseTag(inline);   
+            }
+            else
+            {
+                _builder.AddText(node.Text);
+                VisitChildren(node);
+                _builder.AddClosingTag(tagName, inline);    
+            }
         }
     }
 }

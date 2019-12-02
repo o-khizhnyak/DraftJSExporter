@@ -1,8 +1,8 @@
 namespace DraftJSExporter
 {
-    public class HtmlDraftJSExporter
+    public class HtmlDraftJsExporter
     {
-        public HtmlDraftJSExporter(HtmlDraftJsExporterConfig config)
+        public HtmlDraftJsExporter(HtmlDraftJsExporterConfig config)
         {
             _config = config;
         }
@@ -12,6 +12,12 @@ namespace DraftJSExporter
         public string Render(string contentStateJson)
         {
             var tree = new ContentStateToTreeConverter().Convert(contentStateJson);
+
+            if (tree == null)
+            {
+                return "";
+            }
+            
             return new HtmlDraftJsVisitor(_config).Render(tree);
         }
 

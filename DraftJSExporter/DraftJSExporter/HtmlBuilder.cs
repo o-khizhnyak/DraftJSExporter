@@ -38,29 +38,29 @@ namespace DraftJSExporter
                 if (!selfClosing)
                 {
                     _sb.Append(">");
-                }
-                
-                if (!inline)
-                {
-                    _level++;
-                    _sb.AppendLine();
-                    _sb.Append(new string(' ', TabWidth * _level));
+                    
+                    if (!inline)
+                    {
+                        _level++;
+                        _sb.AppendLine();
+                        _sb.Append(new string(' ', TabWidth * _level));
+                    }
                 }
             }
         }
 
         public void AddClosingTag(string tagName, bool inline)
         {
-            if (!inline)
-            {
-                _level--;
-                _sb.AppendLine();
-                _sb.Append(new string(' ', TabWidth * _level));
-                _addLine = true;
-            }
-            
             if (tagName != null)
             {
+                if (!inline)
+                {
+                    _level--;
+                    _sb.AppendLine();
+                    _sb.Append(new string(' ', TabWidth * _level));
+                    _addLine = true;
+                }
+                
                 _sb.AppendFormat("</{0}>", tagName);
             }
         }
@@ -75,9 +75,17 @@ namespace DraftJSExporter
             _sb.Append(text);
         }
 
-        public void CloseTag()
+        public void CloseTag(bool inline)
         {
-            _sb.Append(" /> ");
+            if (inline)
+            {
+                _sb.Append(" /> ");    
+            }
+            else
+            {
+                _sb.Append(" />");
+                _sb.AppendLine();
+            }
         }
 
         public override string ToString()

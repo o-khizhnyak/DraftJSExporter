@@ -64,6 +64,7 @@ namespace DraftJSExporter
         private DraftJSTreeNode ConvertBlockToTreeNode(Block block, IReadOnlyDictionary<int, Entity> entityMap)
         {
             var blockNode = GetBlockTreeNode(block.Type);
+            blockNode.Depth = block.Depth;
             
             if (block.InlineStyleRanges.Count == 0 && block.EntityRanges.Count == 0)
             {

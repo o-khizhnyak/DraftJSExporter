@@ -65,7 +65,7 @@ namespace DraftJSExporter
 
             if (reader.TokenType != JsonTokenType.StartObject)
             {
-                throw new InvalidOperationException($"Неожиданный тип токена {reader.TokenType}, ожидалось {JsonTokenType.StartObject}");
+                throw new InvalidOperationException($"Unexpected token type {reader.TokenType}, expected {JsonTokenType.StartObject}");
             }
 
             var result = new Dictionary<TKey, TValue>();
@@ -78,18 +78,18 @@ namespace DraftJSExporter
 
                 if (reader.TokenType != JsonTokenType.PropertyName)
                 {
-                    throw new InvalidOperationException($"Неожиданный тип токена {reader.TokenType}, ожидалось {JsonTokenType.PropertyName}");
+                    throw new InvalidOperationException($"Unexpected token type {reader.TokenType}, expected {JsonTokenType.PropertyName}");
                 }
 
                 var key = ParseKey(ref reader);
                 if (!reader.Read())
                 {
-                    throw new InvalidOperationException($"Ожидается значение для ключа");
+                    throw new InvalidOperationException($"Expecting key value");
                 }
                 var value = JsonSerializer.Deserialize<TValue>(ref reader, options);
                 result[key] = value;
             }
-            throw new InvalidOperationException($"Ожидается токен {JsonTokenType.EndObject}");
+            throw new InvalidOperationException($"Expecting token {JsonTokenType.EndObject}");
         }
 
         public void WriteDictionary<TValue>(Utf8JsonWriter writer, IReadOnlyDictionary<TKey, TValue> value, JsonSerializerOptions options)

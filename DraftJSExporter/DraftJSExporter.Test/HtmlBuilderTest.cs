@@ -155,7 +155,7 @@ namespace DraftJSExporter.Test
             builder.AddText(" text");
             builder.AddClosingTag(null, true);
             builder.AddOpeningTag("br", null, true, true);
-            builder.CloseTag();
+            builder.CloseTag(true);
             builder.AddClosingTag("p", false);
             
             Assert.Equal(
