@@ -1,7 +1,9 @@
 using System.Collections.Generic;
-using DraftJSExporter.Defaults;
+using DraftJs.Exporter.Html.Defaults;
+using DraftJs.Exporter.Html.Models;
+using DraftJs.Exporter.Models;
 
-namespace DraftJSExporter
+namespace DraftJs.Exporter.Html
 {
     public class HtmlDraftJsVisitor : DraftJsVisitor
     {
@@ -14,15 +16,15 @@ namespace DraftJSExporter
             _config = config;
         }
 
-        public string Render(DraftJSRootNode node)
+        public string Render(DraftJsRootNode node)
         {
             VisitRoot(node);
             return _builder.ToString();
         }
 
-        protected override void VisitArray(IEnumerable<DraftJSTreeNode> nodes)
+        protected override void VisitArray(IEnumerable<DraftJsTreeNode> nodes)
         {
-            DraftJSTreeNode prev = null;
+            DraftJsTreeNode prev = null;
             foreach (var node in nodes)
             {
                 if (node is OrderedListItemBlock && !(prev is OrderedListItemBlock))
@@ -197,7 +199,7 @@ namespace DraftJSExporter
             RenderNode(node, htmlElement.Type, false, htmlElement.Attributes);
         }
 
-        private void RenderNode(DraftJSTreeNode node, string tagName,  bool inline, 
+        private void RenderNode(DraftJsTreeNode node, string tagName,  bool inline, 
             IReadOnlyDictionary<string, string> attributes = null, bool selfClosing = false)
         {
             _builder.AddOpeningTag(tagName, attributes, inline, selfClosing);

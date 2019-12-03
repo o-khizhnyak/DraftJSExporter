@@ -1,4 +1,7 @@
-namespace DraftJSExporter
+using DraftJs.Exporter.Html.Models;
+using DraftJs.Exporter.Models;
+
+namespace DraftJs.Exporter.Html
 {
     public class HtmlDraftJsExporter
     {
@@ -21,9 +24,9 @@ namespace DraftJSExporter
             return new HtmlDraftJsVisitor(_config).Render(tree);
         }
 
-        public string Render(DraftJSRootNode rootNode)
+        public string Render(DraftJsRootNode rootNode)
         {
-            return new HtmlDraftJsVisitor(_config).Render(rootNode);   
+            return new HtmlDraftJsVisitor(_config).Render(rootNode);
         }
 
     }

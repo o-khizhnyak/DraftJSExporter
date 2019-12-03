@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace DraftJSExporter
+namespace DraftJs.Exporter.Html
 {
     public class HtmlBuilder
     {

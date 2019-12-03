@@ -1,30 +1,12 @@
 using System;
-using System.Buffers.Text;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 using System.Text.Json;
+using DraftJs.Abstractions;
+using DraftJs.Exporter.Models;
 
-namespace DraftJSExporter
+namespace DraftJs.Exporter
 {
-    public class IntDictionaryJsonConverter : CustomDictionaryJsonConverter<int>
-    {
-        protected override int ParseKey(ref Utf8JsonReader reader)
-        {
-            var propertyName = Read(ref reader);
-            if (!Utf8Parser.TryParse(propertyName, out int value, out var bytesConsumed)
-                || bytesConsumed != propertyName.Length)
-            {
-                throw new InvalidOperationException("Failed to parse GUID key");
-            }
-            return value;
-        }
-
-        protected override void WriteKey(Utf8JsonWriter writer, int key)
-        {
-            writer.WritePropertyName(key.ToString(CultureInfo.InvariantCulture));
-        }
-    }
     public static class ContentStateToTreeConverter
     {
         private static readonly JsonSerializerOptions JsonSerializerOptions = new JsonSerializerOptions
@@ -36,7 +18,7 @@ namespace DraftJSExporter
             }
         };
 
-        public static DraftJSRootNode Convert(string contentStateJson)
+        public static DraftJsRootNode Convert(string contentStateJson)
         {
             if (string.IsNullOrWhiteSpace(contentStateJson))
             {
@@ -46,14 +28,14 @@ namespace DraftJSExporter
             return Convert(JsonSerializer.Deserialize<ContentState>(contentStateJson, JsonSerializerOptions));
         }
 
-        public static DraftJSRootNode Convert(ContentState contentState)
+        public static DraftJsRootNode Convert(ContentState contentState)
         {
             if (contentState.Blocks == null)
             {
                 return null;
             }
             
-            var nodes = new List<DraftJSTreeNode>();
+            var nodes = new List<DraftJsTreeNode>();
 
             foreach (var block in contentState.Blocks)
             {
@@ -61,10 +43,10 @@ namespace DraftJSExporter
                 nodes.Add(node);
             }
 
-            return new DraftJSRootNode(nodes);
+            return new DraftJsRootNode(nodes);
         }
 
-        private static DraftJSTreeNode ConvertBlockToTreeNode(Block block, IReadOnlyDictionary<int, Entity> entityMap)
+        private static DraftJsTreeNode ConvertBlockToTreeNode(Block block, IReadOnlyDictionary<int, Entity> entityMap)
         {
             var blockNode = GetBlockTreeNode(block.Type);
             blockNode.Depth = block.Depth;
@@ -89,7 +71,7 @@ namespace DraftJSExporter
 
             var indexes = indexesSet.ToList();
             
-            DraftJSTreeNode openedEntity = null;
+            DraftJsTreeNode openedEntity = null;
             int? openedEntityStopIndex = null;
 
             for (var i = 0; i < indexes.Count - 1; i++)
@@ -97,7 +79,7 @@ namespace DraftJSExporter
                 var index = indexes[i];
                 var nextIndex = indexes[i + 1];
                 var text = block.Text.Substring(index, nextIndex - index);
-                DraftJSTreeNode child = null;
+                DraftJsTreeNode child = null;
 
                 foreach (var styleRange in block.InlineStyleRanges)
                 {

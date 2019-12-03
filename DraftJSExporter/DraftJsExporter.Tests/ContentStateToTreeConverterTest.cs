@@ -1,6 +1,8 @@
+using DraftJs.Exporter;
+using DraftJs.Exporter.Models;
 using Xunit;
 
-namespace DraftJSExporter.Test
+namespace DraftJsExporter.Tests
 {
     public class ContentStateToTreeConverterTest
     {

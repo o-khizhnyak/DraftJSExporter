@@ -1,6 +1,4 @@
-using System.Linq;
-
-namespace DraftJSExporter.Defaults
+namespace DraftJs.Exporter.Html.Defaults
 {
     public class StyleMap
     {

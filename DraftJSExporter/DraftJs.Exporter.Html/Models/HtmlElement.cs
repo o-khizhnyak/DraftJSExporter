@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace DraftJSExporter
+namespace DraftJs.Exporter.Html.Models
 {
     public class HtmlElement
     {

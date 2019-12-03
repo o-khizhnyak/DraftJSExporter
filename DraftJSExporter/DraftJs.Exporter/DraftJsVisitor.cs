@@ -1,11 +1,12 @@
 using System;
 using System.Collections.Generic;
+using DraftJs.Exporter.Models;
 
-namespace DraftJSExporter
+namespace DraftJs.Exporter
 {
     public class DraftJsVisitor
     {
-        public virtual void Visit(DraftJSTreeNode node, DraftJSTreeNode prevNode)
+        public virtual void Visit(DraftJsTreeNode node, DraftJsTreeNode prevNode)
         {
             if (node == null) throw new ArgumentNullException(nameof(node));
             switch (node)
@@ -26,13 +27,13 @@ namespace DraftJSExporter
             }
         }
 
-        public virtual void VisitRoot(DraftJSRootNode node) => VisitArray(node.Children);
+        public virtual void VisitRoot(DraftJsRootNode node) => VisitArray(node.Children);
 
-        public virtual void VisitChildren(DraftJSTreeNode node) => VisitArray(node.Children);
+        public virtual void VisitChildren(DraftJsTreeNode node) => VisitArray(node.Children);
         
-        protected virtual void VisitArray(IEnumerable<DraftJSTreeNode> nodes)
+        protected virtual void VisitArray(IEnumerable<DraftJsTreeNode> nodes)
         {
-            DraftJSTreeNode prevNode = null;
+            DraftJsTreeNode prevNode = null;
             foreach (var node in nodes)
             {
                 Visit(node, prevNode);

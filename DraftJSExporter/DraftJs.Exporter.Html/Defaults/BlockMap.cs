@@ -1,7 +1,8 @@
 using System.Collections.Generic;
-using System.Linq;
+using DraftJs.Abstractions;
+using DraftJs.Exporter.Html.Models;
 
-namespace DraftJSExporter.Defaults
+namespace DraftJs.Exporter.Html.Defaults
 {
     /// <summary>Creates <see cref="HtmlElement"/></summary>
     /// <param name="depth">Value of <see cref="Block.Depth"/> from <see cref="ContentState"/></param>

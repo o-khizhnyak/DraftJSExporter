@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
-using DraftJSExporter.Defaults;
+using DraftJs.Exporter.Html.Defaults;
 
-namespace DraftJSExporter
+namespace DraftJs.Exporter.Html.Models
 {
     public class HtmlDraftJsExporterConfig
     {

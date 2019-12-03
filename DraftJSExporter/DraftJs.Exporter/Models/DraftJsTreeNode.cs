@@ -1,41 +1,41 @@
 using System.Collections.Generic;
 
-namespace DraftJSExporter
+namespace DraftJs.Exporter.Models
 {
-    public abstract class DraftJSTreeNode
+    public abstract class DraftJsTreeNode
     {
-        public IReadOnlyList<DraftJSTreeNode> Children => _children;
+        public IReadOnlyList<DraftJsTreeNode> Children => _children;
         
-        private readonly List<DraftJSTreeNode> _children = new List<DraftJSTreeNode>();
+        private readonly List<DraftJsTreeNode> _children = new List<DraftJsTreeNode>();
         
         public string Text { get; set; }
 
-        public void AppendChild(DraftJSTreeNode node)
+        public void AppendChild(DraftJsTreeNode node)
         {
             _children.Add(node);
         }
     }
     
-    public class DraftJSRootNode
+    public class DraftJsRootNode
     {
-        public DraftJSRootNode(IReadOnlyList<DraftJSTreeNode> children)
+        public DraftJsRootNode(IReadOnlyList<DraftJsTreeNode> children)
         {
             Children = children;
         }
 
-        public IReadOnlyList<DraftJSTreeNode> Children { get; }
+        public IReadOnlyList<DraftJsTreeNode> Children { get; }
     }
 
-    public abstract class BlockTreeNode: DraftJSTreeNode
+    public abstract class BlockTreeNode: DraftJsTreeNode
     {
         public int Depth { get; set; }
     }
     
-    public abstract class StyleTreeNode: DraftJSTreeNode
+    public abstract class StyleTreeNode: DraftJsTreeNode
     {
     }
 
-    public class EntityTreeNode : DraftJSTreeNode
+    public class EntityTreeNode : DraftJsTreeNode
     {
         public EntityTreeNode(string type, IReadOnlyDictionary<string, string> data)
         {
@@ -47,7 +47,7 @@ namespace DraftJSExporter
         public IReadOnlyDictionary<string, string> Data { get; set; }
     }
 
-    public class TextTreeNode : DraftJSTreeNode
+    public class TextTreeNode : DraftJsTreeNode
     {
         public TextTreeNode(string text)
         {

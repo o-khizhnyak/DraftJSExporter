@@ -13,7 +13,9 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\DraftJSExporter\DraftJSExporter.csproj" />
+      <ProjectReference Include="..\DraftJs.Abstractions\DraftJs.Abstractions.csproj" />
+      <ProjectReference Include="..\DraftJs.Exporter.Html\DraftJs.Exporter.Html.csproj" />
+      <ProjectReference Include="..\DraftJs.Exporter\DraftJs.Exporter.csproj" />
     </ItemGroup>
 
 </Project>

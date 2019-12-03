@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Generic;
+using DraftJs.Exporter.Html;
+using DraftJs.Exporter.Html.Models;
 using Xunit;
 
-namespace DraftJSExporter.Test
+namespace DraftJsExporter.Tests
 {
     public class HtmlDraftJsExporterTest
     {

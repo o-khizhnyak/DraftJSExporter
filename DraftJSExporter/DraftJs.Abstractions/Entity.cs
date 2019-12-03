@@ -1,7 +1,6 @@
-using System;
 using System.Collections.Generic;
 
-namespace DraftJSExporter
+namespace DraftJs.Abstractions
 {
     public class Entity
     {

@@ -1,4 +1,4 @@
-namespace DraftJSExporter
+namespace DraftJs.Abstractions
 {
     public interface IHasOffsetLength
     {
