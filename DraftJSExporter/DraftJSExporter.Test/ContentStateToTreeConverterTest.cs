@@ -4,27 +4,17 @@ namespace DraftJSExporter.Test
 {
     public class ContentStateToTreeConverterTest
     {
-        private readonly ContentStateToTreeConverter _converter;
-        
-        public ContentStateToTreeConverterTest()
-        {
-            _converter = new ContentStateToTreeConverter();
-        }
-        
         [Fact]
         public void TestWithEmptyJson()
-        { 
-            var tree = _converter.Convert(null);
-            Assert.Null(tree);
-
-            tree = _converter.Convert("");
+        {
+            var tree = ContentStateToTreeConverter.Convert("");
             Assert.Null(tree);
         }
 
         [Fact]
         public void TestUnstyled()
         {
-            var tree = _converter.Convert(@"{
+            var tree = ContentStateToTreeConverter.Convert(@"{
                 ""entityMap"": {},
                 ""blocks"": [
                     {
@@ -50,7 +40,7 @@ namespace DraftJSExporter.Test
         [Fact]
         public void TestHeaderOne()
         {
-            var tree = _converter.Convert(@"{
+            var tree = ContentStateToTreeConverter.Convert(@"{
                 ""entityMap"": {},
                 ""blocks"": [
                     {
@@ -76,7 +66,7 @@ namespace DraftJSExporter.Test
         [Fact]
         public void TestBlockWithUnderline1()
         {
-            var tree = _converter.Convert(@"{
+            var tree = ContentStateToTreeConverter.Convert(@"{
                 ""entityMap"": {},
                 ""blocks"": [
                     {
@@ -114,7 +104,7 @@ namespace DraftJSExporter.Test
         [Fact]
         public void TestBlockWithUnderline2()
         {
-            var tree = _converter.Convert(@"{
+            var tree = ContentStateToTreeConverter.Convert(@"{
                 ""entityMap"": {},
                 ""blocks"": [
                     {
@@ -158,7 +148,7 @@ namespace DraftJSExporter.Test
         [Fact]
         public void TestBlockWithMultipleStyles()
         {
-            var tree = _converter.Convert(@"{
+            var tree = ContentStateToTreeConverter.Convert(@"{
                 ""entityMap"": {},
                 ""blocks"": [
                     {
@@ -219,7 +209,7 @@ namespace DraftJSExporter.Test
         [Fact]
         public void TestBlockWithEntity()
         {
-            var tree = _converter.Convert(@"{
+            var tree = ContentStateToTreeConverter.Convert(@"{
                 ""entityMap"": {
                     ""0"": {
                         ""type"": ""LINK"",
@@ -326,7 +316,7 @@ namespace DraftJSExporter.Test
         [Fact]
         public void TestBlockWithStylesAndEntity()
         {
-            var tree = _converter.Convert(@"{
+            var tree = ContentStateToTreeConverter.Convert(@"{
                 ""entityMap"": {
                     ""0"": {
                         ""type"": ""LINK"",

@@ -16,7 +16,7 @@ namespace DraftJSExporter
 
         public string Render(DraftJSRootNode node)
         {
-            Visit(node);
+            VisitRoot(node);
             return _builder.ToString();
         }
 
@@ -58,62 +58,64 @@ namespace DraftJSExporter
             RenderNode(node, null, true);
         }
 
-        protected override void VisitUnstyled(UnstyledBlock node)
+        protected override void VisitUnstyled(UnstyledBlock node, BlockTreeNode prevNode)
         {
             RenderBlock(node, _config.BlockMap.Unstyled);
         }
         
-        protected override void VisitHeaderOne(HeaderOneBlock node)
+        protected override void VisitHeaderOne(HeaderOneBlock node, BlockTreeNode prevNode)
         {
             RenderBlock(node, _config.BlockMap.HeaderOne);
         }
         
-        protected override void VisitHeaderTwo(HeaderTwoBlock node)
+        protected override void VisitHeaderTwo(HeaderTwoBlock node, BlockTreeNode prevNode)
         {
             RenderBlock(node, _config.BlockMap.HeaderTwo);
         }
         
-        protected override void VisitHeaderThree(HeaderThreeBlock node)
+        protected override void VisitHeaderThree(HeaderThreeBlock node, BlockTreeNode prevNode)
         {
             RenderBlock(node, _config.BlockMap.HeaderThree);
         }
         
-        protected override void VisitHeaderFour(HeaderFourBlock node)
+        protected override void VisitHeaderFour(HeaderFourBlock node, BlockTreeNode prevNode)
         {
             RenderBlock(node, _config.BlockMap.HeaderFour);
         }
         
-        protected override void VisitHeaderFive(HeaderFiveBlock node)
+        protected override void VisitHeaderFive(HeaderFiveBlock node, BlockTreeNode prevNode)
         {
             RenderBlock(node, _config.BlockMap.HeaderFive);
         }
         
-        protected override void VisitHeaderSix(HeaderSixBlock node)
+        protected override void VisitHeaderSix(HeaderSixBlock node, BlockTreeNode prevNode)
         {
             RenderBlock(node, _config.BlockMap.HeaderSix);
         }
         
-        protected override void VisitUnorderedListItem(UnorderedListItemBlock node, UnorderedListItemBlock prevNode)
+        protected override void VisitUnorderedListItem(UnorderedListItemBlock node, BlockTreeNode prevNode)
         {
-            RenderBlock(node, _config.BlockMap.UnorderedListItem, prevNode?.Depth ?? 0, prevNode == null);
+            RenderBlock(node, _config.BlockMap.UnorderedListItem, prevNode?.Depth ?? 0, 
+                !(prevNode is UnorderedListItemBlock));
         }
 
-        protected override void VisitOrderedListItem(OrderedListItemBlock node, OrderedListItemBlock prevNode)
+        protected override void VisitOrderedListItem(OrderedListItemBlock node, BlockTreeNode prevNode)
         {
-            RenderBlock(node, _config.BlockMap.OrderedListItem, prevNode?.Depth ?? 0, prevNode == null);
+            RenderBlock(node, _config.BlockMap.OrderedListItem, prevNode?.Depth ?? 0, 
+                !(prevNode is OrderedListItemBlock));
         }
         
-        protected override void VisitBlockquote(BlockquoteBlock node)
+        protected override void VisitBlockquote(BlockquoteBlock node, BlockTreeNode prevNode)
         {
             RenderBlock(node, _config.BlockMap.Blockquote);
         }
         
-        protected override void VisitPre(PreBlock node)
+        protected override void VisitPre(PreBlock node, BlockTreeNode prevNode)
         {
             RenderBlock(node, _config.BlockMap.Pre);
         }
         
-        protected override void VisitAtomic(AtomicBlock node)
+        protected override void VisitAtomic(AtomicBlock node, BlockTreeNode prevNode)
         {
             RenderBlock(node, _config.BlockMap.Atomic);
         }

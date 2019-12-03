@@ -7,11 +7,11 @@ namespace DraftJSExporter
             _config = config;
         }
         
-        private HtmlDraftJsExporterConfig _config;
+        private readonly HtmlDraftJsExporterConfig _config;
         
         public string Render(string contentStateJson)
         {
-            var tree = new ContentStateToTreeConverter().Convert(contentStateJson);
+            var tree = ContentStateToTreeConverter.Convert(contentStateJson);
 
             if (tree == null)
             {
@@ -19,6 +19,11 @@ namespace DraftJSExporter
             }
             
             return new HtmlDraftJsVisitor(_config).Render(tree);
+        }
+
+        public string Render(DraftJSRootNode rootNode)
+        {
+            return new HtmlDraftJsVisitor(_config).Render(rootNode);   
         }
 
     }

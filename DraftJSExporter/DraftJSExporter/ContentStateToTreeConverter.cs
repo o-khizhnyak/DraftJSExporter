@@ -25,7 +25,7 @@ namespace DraftJSExporter
             writer.WritePropertyName(key.ToString(CultureInfo.InvariantCulture));
         }
     }
-    public class ContentStateToTreeConverter
+    public static class ContentStateToTreeConverter
     {
         private static readonly JsonSerializerOptions JsonSerializerOptions = new JsonSerializerOptions
         {
@@ -36,15 +36,18 @@ namespace DraftJSExporter
             }
         };
 
-        public DraftJSRootNode Convert(string contentStateJson)
+        public static DraftJSRootNode Convert(string contentStateJson)
         {
             if (string.IsNullOrWhiteSpace(contentStateJson))
             {
                 return null;
             }
 
-            var contentState = JsonSerializer.Deserialize<ContentState>(contentStateJson, JsonSerializerOptions);
+            return Convert(JsonSerializer.Deserialize<ContentState>(contentStateJson, JsonSerializerOptions));
+        }
 
+        public static DraftJSRootNode Convert(ContentState contentState)
+        {
             if (contentState.Blocks == null)
             {
                 return null;
@@ -61,7 +64,7 @@ namespace DraftJSExporter
             return new DraftJSRootNode(nodes);
         }
 
-        private DraftJSTreeNode ConvertBlockToTreeNode(Block block, IReadOnlyDictionary<int, Entity> entityMap)
+        private static DraftJSTreeNode ConvertBlockToTreeNode(Block block, IReadOnlyDictionary<int, Entity> entityMap)
         {
             var blockNode = GetBlockTreeNode(block.Type);
             blockNode.Depth = block.Depth;
@@ -165,7 +168,7 @@ namespace DraftJSExporter
             return blockNode;
         }
 
-        private BlockTreeNode GetBlockTreeNode(string type)
+        private static BlockTreeNode GetBlockTreeNode(string type)
         {
             switch (type)
             {
@@ -198,7 +201,7 @@ namespace DraftJSExporter
             }
         }
 
-        private StyleTreeNode GetStyleTreeNode(string type)
+        private static StyleTreeNode GetStyleTreeNode(string type)
         {
             switch (type)
             {

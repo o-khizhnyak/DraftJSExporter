@@ -26,11 +26,8 @@ namespace DraftJSExporter
             }
         }
 
-        public virtual void Visit(DraftJSRootNode node)
-        {
-            VisitArray(node.Children);
-        }
-        
+        public virtual void VisitRoot(DraftJSRootNode node) => VisitArray(node.Children);
+
         public virtual void VisitChildren(DraftJSTreeNode node) => VisitArray(node.Children);
         
         protected virtual void VisitArray(IEnumerable<DraftJSTreeNode> nodes)
@@ -48,42 +45,40 @@ namespace DraftJSExporter
             switch (node)
             {
                 case UnstyledBlock unstyled:
-                    VisitUnstyled(unstyled);
+                    VisitUnstyled(unstyled, prevNode);
                     break;
                 case HeaderOneBlock headerOneBlock:
-                    VisitHeaderOne(headerOneBlock);
+                    VisitHeaderOne(headerOneBlock, prevNode);
                     break;
                 case HeaderTwoBlock headerTwoBlock:
-                    VisitHeaderTwo(headerTwoBlock);
+                    VisitHeaderTwo(headerTwoBlock, prevNode);
                     break;
                 case HeaderThreeBlock headerThreeBlock:
-                    VisitHeaderThree(headerThreeBlock);
+                    VisitHeaderThree(headerThreeBlock, prevNode);
                     break;
                 case HeaderFourBlock headerFourBlock:
-                    VisitHeaderFour(headerFourBlock);
+                    VisitHeaderFour(headerFourBlock, prevNode);
                     break;
                 case HeaderFiveBlock headerFiveBlock:
-                    VisitHeaderFive(headerFiveBlock);
+                    VisitHeaderFive(headerFiveBlock, prevNode);
                     break;
                 case HeaderSixBlock headerSixBlock:
-                    VisitHeaderSix(headerSixBlock);
+                    VisitHeaderSix(headerSixBlock, prevNode);
                     break;
                 case UnorderedListItemBlock unorderedListItemBlock:
-                    VisitUnorderedListItem(unorderedListItemBlock, 
-                        prevNode is UnorderedListItemBlock prevUnorderedListItem ? prevUnorderedListItem : null);
+                    VisitUnorderedListItem(unorderedListItemBlock, prevNode);
                     break;
                 case OrderedListItemBlock orderedListItemBlock:
-                    VisitOrderedListItem(orderedListItemBlock, 
-                        prevNode is OrderedListItemBlock prevOrderedListItem ? prevOrderedListItem : null);
+                    VisitOrderedListItem(orderedListItemBlock, prevNode);
                     break;
                 case BlockquoteBlock blockquoteBlock:
-                    VisitBlockquote(blockquoteBlock);
+                    VisitBlockquote(blockquoteBlock, prevNode);
                     break;
                 case PreBlock preBlock:
-                    VisitPre(preBlock);
+                    VisitPre(preBlock, prevNode);
                     break;
                 case AtomicBlock atomicBlock:
-                    VisitAtomic(atomicBlock);
+                    VisitAtomic(atomicBlock, prevNode);
                     break;
                 default:
                     throw new Exception($"Unknown block type: {node.GetType()}");
@@ -143,114 +138,142 @@ namespace DraftJSExporter
 
         protected virtual void VisitEntity(EntityTreeNode node)
         {
+            VisitChildren(node);
         }
         
         protected virtual void VisitTextNode(TextTreeNode node)
         {
+            VisitChildren(node);
         }
         
-        protected virtual void VisitUnstyled(UnstyledBlock node)
+        protected virtual void VisitUnstyled(UnstyledBlock node, BlockTreeNode prevNode)
         {
+            VisitChildren(node);
         }
         
-        protected virtual void VisitHeaderOne(HeaderOneBlock node)
+        protected virtual void VisitHeaderOne(HeaderOneBlock node, BlockTreeNode prevNode)
         {
+            VisitChildren(node);
         }
         
-        protected virtual void VisitHeaderTwo(HeaderTwoBlock node)
+        protected virtual void VisitHeaderTwo(HeaderTwoBlock node, BlockTreeNode prevNode)
         {
+            VisitChildren(node);
         }
         
-        protected virtual void VisitHeaderThree(HeaderThreeBlock node)
+        protected virtual void VisitHeaderThree(HeaderThreeBlock node, BlockTreeNode prevNode)
         {
+            VisitChildren(node);
         }
         
-        protected virtual void VisitHeaderFour(HeaderFourBlock node)
+        protected virtual void VisitHeaderFour(HeaderFourBlock node, BlockTreeNode prevNode)
         {
+            VisitChildren(node);
         }
         
-        protected virtual void VisitHeaderFive(HeaderFiveBlock node)
+        protected virtual void VisitHeaderFive(HeaderFiveBlock node, BlockTreeNode prevNode)
         {
+            VisitChildren(node);
         }
         
-        protected virtual void VisitHeaderSix(HeaderSixBlock node)
+        protected virtual void VisitHeaderSix(HeaderSixBlock node, BlockTreeNode prevNode)
         {
+            VisitChildren(node);
         }
         
-        protected virtual void VisitUnorderedListItem(UnorderedListItemBlock node, UnorderedListItemBlock prevNode)
+        protected virtual void VisitUnorderedListItem(UnorderedListItemBlock node, BlockTreeNode prevNode)
         {
+            VisitChildren(node);
         }
 
-        protected virtual void VisitOrderedListItem(OrderedListItemBlock node, OrderedListItemBlock prevNode)
+        protected virtual void VisitOrderedListItem(OrderedListItemBlock node, BlockTreeNode prevNode)
         {
+            VisitChildren(node);
         }
 
-        protected virtual void VisitBlockquote(BlockquoteBlock node)
+        protected virtual void VisitBlockquote(BlockquoteBlock node, BlockTreeNode prevNode)
         {
+            VisitChildren(node);
         }
         
-        protected virtual void VisitPre(PreBlock node)
+        protected virtual void VisitPre(PreBlock node, BlockTreeNode prevNode)
         {
+            VisitChildren(node);
         }
         
-        protected virtual void VisitAtomic(AtomicBlock node)
+        protected virtual void VisitAtomic(AtomicBlock node, BlockTreeNode prevNode)
         {
+            VisitChildren(node);
         }
         
         protected virtual void VisitBoldStyle(BoldStyleTreeNode node)
         {
+            VisitChildren(node);
         }
         
         protected virtual void VisitCodeStyle(CodeStyleTreeNode node)
         {
+            VisitChildren(node);
         }
         
         protected virtual void VisitItalicStyle(ItalicStyleTreeNode node)
         {
+            VisitChildren(node);
         }
         
         protected virtual void VisitUnderlineStyle(UnderlineStyleTreeNode node)
         {
+            VisitChildren(node);
         }
         
         protected virtual void VisitStrikethroughStyle(StrikethroughStyleTreeNode node)
         {
+            VisitChildren(node);
         }
         
         protected virtual void VisitSuperscriptStyle(SuperscriptStyleTreeNode node)
         {
+            VisitChildren(node);
         }
         
         protected virtual void VisitSubscriptStyle(SubscriptStyleTreeNode node)
         {
+            VisitChildren(node);
         }
         
         protected virtual void VisitMarkStyle(MarkStyleTreeNode node)
         {
+            VisitChildren(node);
         }
         
         protected virtual void VisitQuotationStyle(QuotationStyleTreeNode node)
         {
+            VisitChildren(node);
         }
         
         protected virtual void VisitSmallStyle(SmallStyleTreeNode node)
         {
+            VisitChildren(node);
         }
         
         protected virtual void VisitSampleStyle(SampleStyleTreeNode node)
         {
+            VisitChildren(node);
         }
         
         protected virtual void VisitInsertStyle(InsertStyleTreeNode node)
         {
+            VisitChildren(node);
         }
         
         protected virtual void VisitDeleteStyle(DeleteStyleTreeNode node)
         {
+            VisitChildren(node);
         }
         
         protected virtual void VisitKeyboardStyle(KeyboardStyleTreeNode node)
         {
+            VisitChildren(node);
         }
     }
 }
