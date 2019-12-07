@@ -2,62 +2,75 @@ using System.Collections.Generic;
 using DraftJs.Exporter.Html.Defaults;
 using DraftJs.Exporter.Html.Models;
 using DraftJs.Exporter.Models;
+using HtmlTags;
 
 namespace DraftJs.Exporter.Html
 {
     public class HtmlDraftJsVisitor : DraftJsVisitor
     {
-        private readonly HtmlBuilder _builder;
         private readonly HtmlDraftJsExporterConfig _config;
-        
+        private readonly HtmlTag _root;
+        private HtmlTag _current;
+
         public HtmlDraftJsVisitor(HtmlDraftJsExporterConfig config)
         {
-            _builder = new HtmlBuilder();
+            _root = new HtmlTag("div");
+            _current = _root;
             _config = config;
         }
 
         public string Render(DraftJsRootNode node)
         {
             VisitRoot(node);
-            return _builder.ToString();
+            return _root.ToHtmlString();
         }
 
         protected override void VisitArray(IEnumerable<DraftJsTreeNode> nodes)
         {
             DraftJsTreeNode prev = null;
+            var prevParent = _current;
             foreach (var node in nodes)
             {
                 if (node is OrderedListItemBlock && !(prev is OrderedListItemBlock))
                 {
-                    _builder.AddOpeningTag("ol", null, false, false);
+                    var ol = new HtmlTag("ol");
+                    _current.Append(ol);
+                    _current = ol;
                 }
                 else if (node is UnorderedListItemBlock && !(prev is UnorderedListItemBlock))
                 {
-                    _builder.AddOpeningTag("ul", null, false, false);
+                    var ul = new HtmlTag("ul");
+                    _current.Append(ul);
+                    _current = ul;
                 }
                 else if (!(node is OrderedListItemBlock) && prev is OrderedListItemBlock)
                 {
-                    _builder.AddClosingTag("ol", false);
+                    _current = prevParent;
                 }
                 else if (!(node is UnorderedListItemBlock) && prev is UnorderedListItemBlock)
                 {
-                    _builder.AddClosingTag("ul", false);
+                    _current = prevParent;
                 }
                 Visit(node, prev);
 
                 prev = node;
             }
+
+            _current = prevParent;
         }
 
         protected override void VisitEntity(EntityTreeNode node)
         {
-            var element = _config.EntityDecorators[node.Type](node.Data);
-            RenderNode(node, element.Type, element.Inline, element.Attributes, element.SelfClosing);
+            var tag = _config.EntityDecorators[node.Type](node.Data);
+            RenderNode(node, tag);
         }
 
         protected override void VisitTextNode(TextTreeNode node)
         {
-            RenderNode(node, null, true);
+            if (_current.HasClosingTag())
+            {
+                _current.Append(new HtmlTag(string.Empty).NoTag().Text(node.Text));
+            }
         }
 
         protected override void VisitUnstyled(UnstyledBlock node, BlockTreeNode prevNode)
@@ -124,95 +137,93 @@ namespace DraftJs.Exporter.Html
 
         protected override void VisitBoldStyle(BoldStyleTreeNode node)
         {
-            RenderNode(node, _config.StyleMap.Bold, true);
+            RenderNode(node, _config.StyleMap.Bold);
         }
         
         protected override void VisitCodeStyle(CodeStyleTreeNode node)
         {
-            RenderNode(node, _config.StyleMap.Code, true);
+            RenderNode(node, _config.StyleMap.Code);
         }
         
         protected override void VisitItalicStyle(ItalicStyleTreeNode node)
         {
-            RenderNode(node, _config.StyleMap.Italic, true);
+            RenderNode(node, _config.StyleMap.Italic);
         }
         
         protected override void VisitUnderlineStyle(UnderlineStyleTreeNode node)
         {
-            RenderNode(node, _config.StyleMap.Underline, true);
+            RenderNode(node, _config.StyleMap.Underline);
         }
         
         protected override void VisitStrikethroughStyle(StrikethroughStyleTreeNode node)
         {
-            RenderNode(node, _config.StyleMap.Strikethrough, true);
+            RenderNode(node, _config.StyleMap.Strikethrough);
         }
         
         protected override void VisitSuperscriptStyle(SuperscriptStyleTreeNode node)
         {
-            RenderNode(node, _config.StyleMap.Superscript, true);
+            RenderNode(node, _config.StyleMap.Superscript);
         }
         
         protected override void VisitSubscriptStyle(SubscriptStyleTreeNode node)
         {
-            RenderNode(node, _config.StyleMap.Subscript, true);
+            RenderNode(node, _config.StyleMap.Subscript);
         }
         
         protected override void VisitMarkStyle(MarkStyleTreeNode node)
         {
-            RenderNode(node, _config.StyleMap.Mark, true);
+            RenderNode(node, _config.StyleMap.Mark);
         }
         
         protected override void VisitQuotationStyle(QuotationStyleTreeNode node)
         {
-            RenderNode(node, _config.StyleMap.Quotation, true);
+            RenderNode(node, _config.StyleMap.Quotation);
         }
         
         protected override void VisitSmallStyle(SmallStyleTreeNode node)
         {
-            RenderNode(node, _config.StyleMap.Small, true);
+            RenderNode(node, _config.StyleMap.Small);
         }
         
         protected override void VisitSampleStyle(SampleStyleTreeNode node)
         {
-            RenderNode(node, _config.StyleMap.Sample, true);
+            RenderNode(node, _config.StyleMap.Sample);
         }
         
         protected override void VisitInsertStyle(InsertStyleTreeNode node)
         {
-            RenderNode(node, _config.StyleMap.Insert, true);
+            RenderNode(node, _config.StyleMap.Insert);
         }
         
         protected override void VisitDeleteStyle(DeleteStyleTreeNode node)
         {
-            RenderNode(node, _config.StyleMap.Delete, true);
+            RenderNode(node, _config.StyleMap.Delete);
         }
         
         protected override void VisitKeyboardStyle(KeyboardStyleTreeNode node)
         {
-            RenderNode(node, _config.StyleMap.Keyboard, true);
+            RenderNode(node, _config.StyleMap.Keyboard);
         }
 
-        private void RenderBlock(BlockTreeNode node, CreateHtmlElement createHtmlElement, int prevDepth = 0, 
+        private void RenderBlock(BlockTreeNode node, CreateBlockTag createBlockTag, int prevDepth = 0, 
             bool firstChild = false)
         {
-            var htmlElement = createHtmlElement(node.Depth, prevDepth, firstChild);
-            RenderNode(node, htmlElement.Type, false, htmlElement.Attributes);
+            var tag = createBlockTag(node.Depth, prevDepth, firstChild);
+            RenderNode(node, tag);
         }
 
-        private void RenderNode(DraftJsTreeNode node, string tagName,  bool inline, 
-            IReadOnlyDictionary<string, string> attributes = null, bool selfClosing = false)
+        private void RenderNode(DraftJsTreeNode node, HtmlTag tag)
         {
-            _builder.AddOpeningTag(tagName, attributes, inline, selfClosing);
-            if (selfClosing)
-            {
-                _builder.CloseTag(inline);   
-            }
-            else
-            {
-                _builder.AddText(node.Text);
-                VisitChildren(node);
-                _builder.AddClosingTag(tagName, inline);    
-            }
+            var prev = _current;
+            _current.Append(tag);
+            _current = tag;
+            VisitChildren(node);
+            _current = prev;
+        }
+        
+        private void RenderNode(DraftJsTreeNode node, string tagName)
+        {
+            RenderNode(node, new HtmlTag(tagName));
         }
     }
 }

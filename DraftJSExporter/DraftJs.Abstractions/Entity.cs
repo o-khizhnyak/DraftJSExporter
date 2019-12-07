@@ -8,6 +8,6 @@ namespace DraftJs.Abstractions
 
         public string Mutability { get; set; }
 
-        public Dictionary<string, string> Data { get; set; }
+        public Dictionary<string, object> Data { get; set; }
     }
 }

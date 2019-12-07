@@ -1,3 +1,4 @@
+using System.Text.Json;
 using DraftJs.Exporter;
 using DraftJs.Exporter.Models;
 using Xunit;
@@ -34,9 +35,8 @@ namespace DraftJsExporter.Tests
             var child = Assert.Single(tree.Children);
             Assert.NotNull(child);
             var unstyled = Assert.IsType<UnstyledBlock>(child);
-            Assert.Equal("some text", unstyled.Text);
+            Assert.Equal("some text", Assert.IsType<TextTreeNode>(Assert.Single(unstyled.Children)).Text);
             Assert.Equal(0, unstyled.Depth);
-            Assert.Empty(unstyled.Children);
         }
 
         [Fact]
@@ -60,9 +60,8 @@ namespace DraftJsExporter.Tests
             var child = Assert.Single(tree.Children);
             Assert.NotNull(child);
             var header = Assert.IsType<HeaderOneBlock>(child);
-            Assert.Equal("some text", header.Text);
+            Assert.Equal("some text", Assert.IsType<TextTreeNode>(Assert.Single(header.Children)).Text);
             Assert.Equal(0, header.Depth);
-            Assert.Empty(header.Children);
         }
 
         [Fact]
@@ -92,12 +91,10 @@ namespace DraftJsExporter.Tests
             var child = Assert.Single(tree.Children);
             Assert.NotNull(child);
             var unstyled = Assert.IsType<UnstyledBlock>(child);
-            Assert.Null(unstyled.Text);
             Assert.Equal(0, unstyled.Depth);
             Assert.Equal(2, unstyled.Children.Count);
             var underline = Assert.IsType<UnderlineStyleTreeNode>(unstyled.Children[0]);
-            Assert.Equal("underlined", underline.Text);
-            Assert.Empty(underline.Children);
+            Assert.Equal("underlined", Assert.IsType<TextTreeNode>(Assert.Single(underline.Children)).Text);
             var plain = Assert.IsType<TextTreeNode>(unstyled.Children[1]);
             Assert.Equal(" text", plain.Text);
             Assert.Empty(plain.Children);
@@ -130,7 +127,6 @@ namespace DraftJsExporter.Tests
             var child = Assert.Single(tree.Children);
             Assert.NotNull(child);
             var unstyled = Assert.IsType<UnstyledBlock>(child);
-            Assert.Null(unstyled.Text);
             Assert.Equal(0, unstyled.Depth);
             Assert.Equal(3, unstyled.Children.Count);
             
@@ -139,8 +135,7 @@ namespace DraftJsExporter.Tests
             Assert.Empty(first.Children);
             
             var second = Assert.IsType<UnderlineStyleTreeNode>(unstyled.Children[1]);
-            Assert.Equal("underlined", second.Text);
-            Assert.Empty(second.Children);
+            Assert.Equal("underlined", Assert.IsType<TextTreeNode>(Assert.Single(second.Children)).Text);
 
             var third = Assert.IsType<TextTreeNode>(unstyled.Children[2]);
             Assert.Equal(" word", third.Text);
@@ -179,7 +174,6 @@ namespace DraftJsExporter.Tests
             var child = Assert.Single(tree.Children);
             Assert.NotNull(child);
             var unstyled = Assert.IsType<UnstyledBlock>(child);
-            Assert.Null(unstyled.Text);
             Assert.Equal(0, unstyled.Depth);
             Assert.Equal(5, unstyled.Children.Count);
 
@@ -188,20 +182,16 @@ namespace DraftJsExporter.Tests
             Assert.Empty(plain1.Children);
 
             var underline1 = Assert.IsType<UnderlineStyleTreeNode>(unstyled.Children[1]);
-            Assert.Equal("with ", underline1.Text);
-            Assert.Empty(underline1.Children);
+            Assert.Equal("with ", Assert.IsType<TextTreeNode>(Assert.Single(underline1.Children)).Text);
 
             var underline2 = Assert.IsType<UnderlineStyleTreeNode>(unstyled.Children[2]);
-            Assert.Null(underline2.Text);
             Assert.Single(underline2.Children);
 
             var bold1 = Assert.IsType<BoldStyleTreeNode>(underline2.Children[0]);
-            Assert.Equal("multiple", bold1.Text);
-            Assert.Empty(bold1.Children);
+            Assert.Equal("multiple", Assert.IsType<TextTreeNode>(Assert.Single(bold1.Children)).Text);
 
             var bold2 = Assert.IsType<BoldStyleTreeNode>(unstyled.Children[3]);
-            Assert.Equal(" sty", bold2.Text);
-            Assert.Empty(bold2.Children);
+            Assert.Equal(" sty", Assert.IsType<TextTreeNode>(Assert.Single(bold2.Children)).Text);
 
             var plain2 = Assert.IsType<TextTreeNode>(unstyled.Children[4]);
             Assert.Equal("les", plain2.Text);
@@ -280,40 +270,34 @@ namespace DraftJsExporter.Tests
             Assert.Equal(3, tree.Children.Count);
             
             var block1 = Assert.IsType<UnstyledBlock>(tree.Children[0]);
-            Assert.Null(block1.Text);
             var block1Child = Assert.Single(block1.Children);
             
             var entity1 = Assert.IsType<EntityTreeNode>(block1Child);
             Assert.Equal("LINK", entity1.Type);
-            Assert.Equal("http://example.com", entity1.Data["href"]);
-            Assert.Equal("link to example", entity1.Text);
-            Assert.Empty(entity1.Children);
+            Assert.Equal("http://example.com", StringFromJsonElement(entity1.Data["href"]));
+            Assert.Equal("link to example", Assert.IsType<TextTreeNode>(Assert.Single(entity1.Children)).Text);
             
             var block2 = Assert.IsType<UnstyledBlock>(tree.Children[1]);
-            Assert.Null(block2.Text);
             Assert.Equal(3, block2.Children.Count);
 
             var block2Child1 = Assert.IsType<TextTreeNode>(block2.Children[0]);
             Assert.Equal("li", block2Child1.Text);
-            Assert.Empty(block2Child1.Children);
 
             var block2Child2 = Assert.IsType<EntityTreeNode>(block2.Children[1]);
-            Assert.Equal("nk to", block2Child2.Text);
-            Assert.Equal("http://example.com", block2Child2.Data["href"]);
+            Assert.Equal("nk to", Assert.IsType<TextTreeNode>(Assert.Single(block2Child2.Children)).Text);
+            Assert.Equal("http://example.com", StringFromJsonElement(block2Child2.Data["href"]));
             
             var block2Child3 = Assert.IsType<TextTreeNode>(block2.Children[2]);
             Assert.Equal(" example", block2Child3.Text);
-            Assert.Empty(block2Child3.Children);
 
             var block3 = Assert.IsType<AtomicBlock>(tree.Children[2]);
-            Assert.Null(block3.Text);
             var block3Child = Assert.Single(block3.Children);
             var image = Assert.IsType<EntityTreeNode>(block3Child);
-            Assert.Equal(" ", image.Text);
+            Assert.Equal(" ", Assert.IsType<TextTreeNode>(Assert.Single(image.Children)).Text);
             Assert.Equal("IMAGE", image.Type);
-            Assert.Equal("http://site.com", image.Data["src"]);
-            Assert.Empty(image.Children);
+            Assert.Equal("http://site.com", StringFromJsonElement(image.Data["src"]));
         }
+
 
         [Fact]
         public void TestBlockWithStylesAndEntity()
@@ -360,7 +344,6 @@ namespace DraftJsExporter.Tests
 
             var root = Assert.Single(tree.Children);
             var unstyled = Assert.IsType<UnstyledBlock>(root);
-            Assert.Null(unstyled.Text);
             Assert.Equal(5, unstyled.Children.Count);
 
             var plain1 = Assert.IsType<TextTreeNode>(unstyled.Children[0]);
@@ -369,13 +352,11 @@ namespace DraftJsExporter.Tests
 
             var entity = Assert.IsType<EntityTreeNode>(unstyled.Children[1]);
             Assert.Equal("LINK", entity.Type);
-            Assert.Equal("http://example.com", entity.Data["href"]);
-            Assert.Null(entity.Text);
+            Assert.Equal("http://example.com", StringFromJsonElement(entity.Data["href"]));
             Assert.Equal(2, entity.Children.Count);
 
             var entityChild1 = Assert.IsType<BoldStyleTreeNode>(entity.Children[0]);
-            Assert.Equal("with", entityChild1.Text);
-            Assert.Empty(entityChild1.Children);
+            Assert.Equal("with", Assert.IsType<TextTreeNode>(Assert.Single(entityChild1.Children)).Text);
 
             var entityChild2 = Assert.IsType<TextTreeNode>(entity.Children[1]);
             Assert.Equal(" styles", entityChild2.Text);
@@ -386,12 +367,15 @@ namespace DraftJsExporter.Tests
             Assert.Empty(plain2.Children);
 
             var italic = Assert.IsType<ItalicStyleTreeNode>(unstyled.Children[3]);
-            Assert.Equal("and", italic.Text);
-            Assert.Empty(italic.Children);
+            Assert.Equal("and", Assert.IsType<TextTreeNode>(Assert.Single(italic.Children)).Text);
 
             var plain3 = Assert.IsType<TextTreeNode>(unstyled.Children[4]);
             Assert.Equal(" entity", plain3.Text);
             Assert.Empty(plain3.Children);
         }
+        
+        
+        private static string StringFromJsonElement(object el) => Assert.IsType<JsonElement>(el).GetString();
+
     }
 }

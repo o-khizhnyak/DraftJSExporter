@@ -1,7 +1,8 @@
-using System;
 using System.Collections.Generic;
+using System.Text.Json;
 using DraftJs.Exporter.Html;
 using DraftJs.Exporter.Html.Models;
+using HtmlTags;
 using Xunit;
 
 namespace DraftJsExporter.Tests
@@ -11,12 +12,36 @@ namespace DraftJsExporter.Tests
         [Fact]
         public void TestExporter()
         {
+            HtmlTag Picture(IReadOnlyDictionary<string, object> data)
+            {
+                var picture = new HtmlTag("picture");
+                var alt = ((JsonElement) data["alt"]).GetString();
+                var title = ((JsonElement) data["title"]).GetString();
+                var src = ((JsonElement) data["src"]).GetString();
+                picture.Append("img", img => img.Attr("src", src).Attr("title", title).Attr("alt", alt));
+
+                foreach (var sourceElem in ((JsonElement) data["sources"]).EnumerateArray())
+                {
+                    var src1X = sourceElem.GetProperty("src1x").GetString();
+                    var src2X = sourceElem.GetProperty("src2x").GetString();
+                    var media = sourceElem.GetProperty("media").GetString();
+                    picture.Append("source", configuration: source =>
+                    {
+                        source.Attr("srcset", $"{src1X} 1x, {src2X} 2x");
+                        source.Attr("media", media);
+                    });
+                }
+
+                return picture;
+            }
+
             var exporter = new HtmlDraftJsExporter(new HtmlDraftJsExporterConfig
             {
-                EntityDecorators = new Dictionary<string, Func<IReadOnlyDictionary<string, string>, HtmlElement>>
+                EntityDecorators = new Dictionary<string, CreateTagFromEntityData>
                 {
-                    {"LINK", pairs => new HtmlElement("a", pairs, true)},
-                    {"IMAGE", pairs => new HtmlElement("img", pairs, false, true)}
+                    {"LINK", data => new HtmlTag("a", t => t.ConfigureAttributesFromEntityData(data))},
+                    {"IMAGE", data => new HtmlTag("img", t => t.ConfigureAttributesFromEntityData(data))},
+                    { "PICTURE", Picture }
                 }
             });
 
@@ -43,6 +68,24 @@ namespace DraftJsExporter.Tests
             ""mutability"": ""MUTABLE"",
             ""data"": {
                 ""src"": ""http://some-site-1.com""
+            }
+        },
+        ""3"": {
+            ""type"": ""PICTURE"",
+            ""mutability"": ""MUTABLE"",
+            ""data"": {
+                ""alt"": ""a"",
+                ""title"": ""t"",
+                ""src"": ""https://example.com/fallback.png"",
+                ""sources"": [{
+                    ""src1x"": ""https://example.com/s1_1000.png"",
+                    ""src2x"": ""https://example.com/s1_2000.png"",
+                    ""media"": ""(min-width: 600px)""
+                }, {
+                    ""src1x"": ""https://example.com/s2_1000.png"",
+                    ""src2x"": ""https://example.com/s2_2000.png"",
+                    ""media"": ""(min-width: 400px)""
+                }]
             }
         }
     },
@@ -237,57 +280,50 @@ namespace DraftJsExporter.Tests
             ""inlineStyleRanges"": [],
             ""entityRanges"": [],
             ""data"": {}
+        },
+        {
+            ""key"": ""adasef13qwe"",
+            ""text"": "" "",
+            ""type"": ""atomic"",
+            ""depth"": 0,
+            ""inlineStyleRanges"": [],
+            ""entityRanges"": [{
+                ""offset"": 0,
+                ""length"": 1,
+                ""key"": 3
+            }],
+            ""data"": {}
         }
     ]
 }
 ");
             
             Assert.Equal(
-                @"<h1>
-    Title
-</h1>
-<div>
-    Paragraph text
-</div>
-<div>
-    T<strong>ex</strong>t <em>with</em> <u>different </u><u><code>st</code></u><code>yles</code>
-</div>
-<div>
-    Text which contains <a href=""http://some-site.com"">link</a> to something
-</div>
-<div>
-    Text which contains <a href=""http://some-site.com""><u>styled link</u></a> to something
-</div>
-<div>
-    Text which contains <a href=""http://some-site.com""><strong>sty</strong>led link</a> to something
-</div>
-<div>
-    Text which contains <a href=""http://some-site.com"">style<strong>d link</strong></a> to something
-</div>
-<ul>
-    <li class=""list-item--depth-0 list-item--reset"">
-        List item 1
-    </li>
-    <li class=""list-item--depth-0"">
-        List item 2
-    </li>
-    <li class=""list-item--depth-1 list-item--reset"">
-        List item 2.1
-    </li>
-    <li class=""list-item--depth-2 list-item--reset"">
-        List item 2.1.1
-    </li>
-    <li class=""list-item--depth-1"">
-        List item 2.2
-    </li>
-    <li class=""list-item--depth-0"">
-        List item 3 with a <a href=""http://www.google.com/"">style<strong>d link</strong></a> to something
-    </li>
-</ul>
-<img src=""http://some-site-1.com"" />
-<div>
-    Plain text
-</div>", result);
+                "<div>" +
+                "<h1>Title</h1>" +
+                "<div>Paragraph text</div>" +
+                "<div>T<strong>ex</strong>t <em>with</em> <u>different </u><u><code>st</code></u><code>yles</code></div>" +
+                "<div>Text which contains <a href=\"http://some-site.com\">link</a> to something</div>" +
+                "<div>Text which contains <a href=\"http://some-site.com\"><u>styled link</u></a> to something</div>" +
+                "<div>Text which contains <a href=\"http://some-site.com\"><strong>sty</strong>led link</a> to something</div>" +
+                "<div>Text which contains <a href=\"http://some-site.com\">style<strong>d link</strong></a> to something</div>" +
+                "<ul>" +
+                "<li class=\"list-item--depth-0 list-item--reset\">List item 1</li>" +
+                "<li class=\"list-item--depth-0\">List item 2</li>" +
+                "<li class=\"list-item--depth-1 list-item--reset\">List item 2.1</li>" +
+                "<li class=\"list-item--depth-2 list-item--reset\">List item 2.1.1</li>" +
+                "<li class=\"list-item--depth-1\">List item 2.2</li>" +
+                "<li class=\"list-item--depth-0\">List item 3 with a <a href=\"http://www.google.com/\">style<strong>d link</strong></a> to something</li>" +
+                "</ul>" +
+                "<img src=\"http://some-site-1.com\">" +
+                "<div>Plain text</div>" +
+                "<picture>" +
+                "<img src=\"https://example.com/fallback.png\" title=\"t\" alt=\"a\">" +
+                "<source srcset=\"https://example.com/s1_1000.png 1x, https://example.com/s1_2000.png 2x\" media=\"(min-width: 600px)\">" +
+                "<source srcset=\"https://example.com/s2_1000.png 1x, https://example.com/s2_2000.png 2x\" media=\"(min-width: 400px)\"> " +
+                "</picture>" +
+                "</div>", 
+                result);
         }
 
         [Fact]

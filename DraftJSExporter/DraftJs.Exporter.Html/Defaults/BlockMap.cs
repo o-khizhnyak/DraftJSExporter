@@ -1,52 +1,53 @@
 using System.Collections.Generic;
-using DraftJs.Abstractions;
 using DraftJs.Exporter.Html.Models;
+using HtmlTags;
 
 namespace DraftJs.Exporter.Html.Defaults
 {
-    /// <summary>Creates <see cref="HtmlElement"/></summary>
-    /// <param name="depth">Value of <see cref="Block.Depth"/> from <see cref="ContentState"/></param>
-    /// <param name="prevDepth">Previous block depth</param>
-    /// <param name="firstChild">Is this first child of its parent</param>
-    public delegate HtmlElement CreateHtmlElement(int depth, int prevDepth = 0, bool firstChild = false);
-    
     public class BlockMap
     {
-        public CreateHtmlElement Unstyled { get; set; } = GetFactory("div");
+        public CreateBlockTag Unstyled { get; set; } = GetFactory("div");
 
-        public CreateHtmlElement HeaderOne { get; set; } = GetFactory("h1");
+        public CreateBlockTag HeaderOne { get; set; } = GetFactory("h1");
 
-        public CreateHtmlElement HeaderTwo { get; set; } = GetFactory("h2");
+        public CreateBlockTag HeaderTwo { get; set; } = GetFactory("h2");
 
-        public CreateHtmlElement HeaderThree { get; set; } = GetFactory("h3");
+        public CreateBlockTag HeaderThree { get; set; } = GetFactory("h3");
 
-        public CreateHtmlElement HeaderFour { get; set; } = GetFactory("h4");
+        public CreateBlockTag HeaderFour { get; set; } = GetFactory("h4");
 
-        public CreateHtmlElement HeaderFive { get; set; } = GetFactory("h5");
+        public CreateBlockTag HeaderFive { get; set; } = GetFactory("h5");
 
-        public CreateHtmlElement HeaderSix { get; set; } = GetFactory("h6");
+        public CreateBlockTag HeaderSix { get; set; } = GetFactory("h6");
 
-        public CreateHtmlElement UnorderedListItem { get; set; } = CreateListItem();
+        public CreateBlockTag UnorderedListItem { get; set; } = CreateListItem;
 
-        public CreateHtmlElement OrderedListItem { get; set; } = CreateListItem();
+        public CreateBlockTag OrderedListItem { get; set; } = CreateListItem;
 
-        public CreateHtmlElement Blockquote { get; set; } = GetFactory("blockquote");
+        public CreateBlockTag Blockquote { get; set; } = GetFactory("blockquote");
 
-        public CreateHtmlElement Pre { get; set; } = GetFactory("pre");
+        public CreateBlockTag Pre { get; set; } = GetFactory("pre");
         
-        public CreateHtmlElement Atomic { get; set; } = GetFactory(null);
+        public CreateBlockTag Atomic { get; set; } = (depth, prevDepth, firstChild) => new HtmlTag(null).NoTag();
 
-        private static CreateHtmlElement GetFactory(string tagName)
+        private static CreateBlockTag GetFactory(string tagName)
         {
-            return (depth, prevDepth, firstChild) => new HtmlElement(tagName);
+            return (depth, prevDepth, firstChild) => new HtmlTag(tagName);
         }
 
-        private static CreateHtmlElement CreateListItem()
+        private static HtmlTag CreateListItem(int depth, int prevDepth, bool firstChild)
         {
-            return (depth, prevDepth, firstChild) => new HtmlElement("li", new Dictionary<string, string>
-            {
-                {"class", $"list-item--depth-{depth}{GetListItemResetClass(depth, prevDepth, firstChild)}"}
-            });
+            return new HtmlTag("li", t => ConfigureListItemTag(t, depth, prevDepth, firstChild));
+        }
+
+        private static void ConfigureListItemTag(HtmlTag t, int depth, int prevDepth, bool firstChild)
+        {
+            t.Attr("class", GetListItemClasses(depth, prevDepth, firstChild));
+        }
+
+        private static string GetListItemClasses(int depth, int prevDepth, bool firstChild)
+        {
+            return $"list-item--depth-{depth}{GetListItemResetClass(depth, prevDepth, firstChild)}";
         }
 
         private static string GetListItemResetClass(int depth, int prevDepth = 0, bool firstChild = false)

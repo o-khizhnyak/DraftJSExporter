@@ -19,7 +19,7 @@
         <LangVersion>8.0</LangVersion>
         <Authors>Oksana Khizhnyak</Authors>
         <Owners>Oksana Khizhnyak</Owners>
-        <PackageId>DraftJSExporter</PackageId>
+        <PackageId>$(AssemblyName)</PackageId>
         <PackageLicenseUrl>https://github.com/o-khizhnyak/DraftJSExporter/blob/master/LICENSE</PackageLicenseUrl>
         <PackageProjectUrl>https://github.com/o-khizhnyak/DraftJSExporter</PackageProjectUrl>
         <RepositoryUrl>https://github.com/o-khizhnyak/DraftJSExporter</RepositoryUrl>
