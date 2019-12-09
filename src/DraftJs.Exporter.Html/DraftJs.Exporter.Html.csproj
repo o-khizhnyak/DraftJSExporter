@@ -10,7 +10,6 @@
 
     <ItemGroup>
         <PackageReference Include="HtmlTags" Version="8.0.0" />
-        <PackageReference Include="AngleSharp" Version="0.13.0" />
     </ItemGroup>
     <Import Project="../Common.props" />
     <Import Project="../Version.props" />
