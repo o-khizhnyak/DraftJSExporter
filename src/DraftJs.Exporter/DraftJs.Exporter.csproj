@@ -12,4 +12,5 @@
       <ProjectReference Include="..\DraftJs.Abstractions\DraftJs.Abstractions.csproj" />
     </ItemGroup>
     <Import Project="../Common.props" />
+    <Import Project="../Version.props" />
 </Project>
