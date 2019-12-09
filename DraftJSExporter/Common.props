@@ -1,0 +1,32 @@
+<Project>
+
+    <PropertyGroup>
+        <TestProject>False</TestProject>
+        <TestProject Condition="$(AssemblyName.Contains('.Tests')) or $(AssemblyName.Equals('Tests.Utils'))">True</TestProject>
+    </PropertyGroup>
+
+<!--    <PropertyGroup Condition="!$(TestProject)">-->
+<!--        <DocumentationFile>bin\$(AssemblyName).xml</DocumentationFile>-->
+<!--        <TreatWarningsAsErrors>true</TreatWarningsAsErrors>-->
+<!--    </PropertyGroup>-->
+
+    <PropertyGroup>
+        <GenerateAssemblyInfo>True</GenerateAssemblyInfo>
+        <RootNamespace Condition="!$(TestProject)">$(AssemblyName)</RootNamespace>
+        <RootNamespace Condition="$(TestProject)">$(AssemblyName.Replace('.Tests', ''))</RootNamespace>
+        <Title>$(AssemblyName)</Title>
+        <AssemblyTitle>$(AssemblyName)</AssemblyTitle>
+        <LangVersion>8.0</LangVersion>
+        <Authors>Oksana Khizhnyak</Authors>
+        <Owners>Oksana Khizhnyak</Owners>
+        <PackageId>$(AssemblyName)</PackageId>
+        <PackageLicenseUrl>https://github.com/o-khizhnyak/DraftJSExporter/blob/master/LICENSE</PackageLicenseUrl>
+        <PackageProjectUrl>https://github.com/o-khizhnyak/DraftJSExporter</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/o-khizhnyak/DraftJSExporter</RepositoryUrl>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="JetBrains.Annotations" Version="2019.1.1" PrivateAssets="All" />
+    </ItemGroup>
+
+</Project>

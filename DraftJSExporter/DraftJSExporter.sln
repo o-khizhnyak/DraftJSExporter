@@ -1,8 +1,19 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DraftJSExporter", "DraftJSExporter\DraftJSExporter.csproj", "{6D6878A9-1B15-4443-A30F-AC0A983044E5}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DraftJsExporter.Tests", "DraftJsExporter.Tests\DraftJsExporter.Tests.csproj", "{395EFB5C-B817-4B1E-BC4C-91C297CEDE20}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DraftJSExporter.Test", "DraftJSExporter.Test\DraftJSExporter.Test.csproj", "{395EFB5C-B817-4B1E-BC4C-91C297CEDE20}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DraftJs.Abstractions", "DraftJs.Abstractions\DraftJs.Abstractions.csproj", "{A722637F-8004-4E25-80F2-7C2411985A34}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DraftJs.Exporter", "DraftJs.Exporter\DraftJs.Exporter.csproj", "{3159DEFB-AA7A-45B0-B526-B2BE9896E64F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DraftJs.Exporter.Html", "DraftJs.Exporter.Html\DraftJs.Exporter.Html.csproj", "{56F6D5E5-DAD2-4B45-8339-94E8E97FB26B}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{A6695088-4BA3-44F9-96D4-87562383A03A}"
+	ProjectSection(SolutionItems) = preProject
+		Common.props = Common.props
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DraftJs.Exporter.Md", "DraftJs.Exporter.Md\DraftJs.Exporter.Md.csproj", "{0E0E6567-61EF-47CF-9FE9-988EAE81E8F9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -10,13 +21,25 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{6D6878A9-1B15-4443-A30F-AC0A983044E5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{6D6878A9-1B15-4443-A30F-AC0A983044E5}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{6D6878A9-1B15-4443-A30F-AC0A983044E5}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{6D6878A9-1B15-4443-A30F-AC0A983044E5}.Release|Any CPU.Build.0 = Release|Any CPU
 		{395EFB5C-B817-4B1E-BC4C-91C297CEDE20}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{395EFB5C-B817-4B1E-BC4C-91C297CEDE20}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{395EFB5C-B817-4B1E-BC4C-91C297CEDE20}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{395EFB5C-B817-4B1E-BC4C-91C297CEDE20}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A722637F-8004-4E25-80F2-7C2411985A34}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A722637F-8004-4E25-80F2-7C2411985A34}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A722637F-8004-4E25-80F2-7C2411985A34}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A722637F-8004-4E25-80F2-7C2411985A34}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3159DEFB-AA7A-45B0-B526-B2BE9896E64F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3159DEFB-AA7A-45B0-B526-B2BE9896E64F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3159DEFB-AA7A-45B0-B526-B2BE9896E64F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3159DEFB-AA7A-45B0-B526-B2BE9896E64F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{56F6D5E5-DAD2-4B45-8339-94E8E97FB26B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{56F6D5E5-DAD2-4B45-8339-94E8E97FB26B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{56F6D5E5-DAD2-4B45-8339-94E8E97FB26B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{56F6D5E5-DAD2-4B45-8339-94E8E97FB26B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0E0E6567-61EF-47CF-9FE9-988EAE81E8F9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0E0E6567-61EF-47CF-9FE9-988EAE81E8F9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0E0E6567-61EF-47CF-9FE9-988EAE81E8F9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0E0E6567-61EF-47CF-9FE9-988EAE81E8F9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
