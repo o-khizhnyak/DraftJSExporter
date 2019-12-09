@@ -1,4 +1,7 @@
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Text.Encodings.Web;
 using DraftJs.Exporter.Html.Defaults;
 using DraftJs.Exporter.Html.Models;
 using DraftJs.Exporter.Models;
@@ -21,8 +24,20 @@ namespace DraftJs.Exporter.Html
 
         public string Render(DraftJsRootNode node)
         {
+            var tag = RenderTag(node);
+            using var sw = new StringWriter();
+            foreach (var tagChild in tag.Children)
+            {
+                tagChild.WriteTo(sw, HtmlEncoder.Default);
+            }
+
+            return sw.ToString();
+        }
+
+        public HtmlTag RenderTag(DraftJsRootNode node)
+        {
             VisitRoot(node);
-            return _root.ToHtmlString();
+            return _root;
         }
 
         protected override void VisitArray(IEnumerable<DraftJsTreeNode> nodes)

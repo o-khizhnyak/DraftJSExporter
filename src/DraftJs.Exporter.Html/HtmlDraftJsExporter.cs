@@ -1,5 +1,6 @@
 using DraftJs.Exporter.Html.Models;
 using DraftJs.Exporter.Models;
+using HtmlTags;
 
 namespace DraftJs.Exporter.Html
 {
@@ -16,17 +17,17 @@ namespace DraftJs.Exporter.Html
         {
             var tree = ContentStateToTreeConverter.Convert(contentStateJson);
 
-            if (tree == null)
-            {
-                return "";
-            }
-            
-            return new HtmlDraftJsVisitor(_config).Render(tree);
+            return tree == null ? "" : new HtmlDraftJsVisitor(_config).Render(tree);
         }
 
         public string Render(DraftJsRootNode rootNode)
         {
             return new HtmlDraftJsVisitor(_config).Render(rootNode);
+        }
+        
+        public HtmlTag RenderTag(DraftJsRootNode rootNode)
+        {
+            return new HtmlDraftJsVisitor(_config).RenderTag(rootNode);
         }
 
     }

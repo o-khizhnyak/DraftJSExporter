@@ -299,7 +299,6 @@ namespace DraftJsExporter.Tests
 ");
             
             Assert.Equal(
-                "<div>" +
                 "<h1>Title</h1>" +
                 "<div>Paragraph text</div>" +
                 "<div>T<strong>ex</strong>t <em>with</em> <u>different </u><u><code>st</code></u><code>yles</code></div>" +
@@ -321,8 +320,8 @@ namespace DraftJsExporter.Tests
                 "<img src=\"https://example.com/fallback.png\" title=\"t\" alt=\"a\">" +
                 "<source srcset=\"https://example.com/s1_1000.png 1x, https://example.com/s1_2000.png 2x\" media=\"(min-width: 600px)\">" +
                 "<source srcset=\"https://example.com/s2_1000.png 1x, https://example.com/s2_2000.png 2x\" media=\"(min-width: 400px)\"> " +
-                "</picture>" +
-                "</div>", 
+                "</picture>"
+                , 
                 result);
         }
 
