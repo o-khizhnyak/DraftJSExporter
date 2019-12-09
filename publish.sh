@@ -13,4 +13,6 @@ fi
 
 VERSION=$(grep "<Version>" ./DraftJSExporter/Version.props | sed -r "s#.*<Version>([0-9]+.[0-9]+.[0-9]+)</Version>.*#\1#")
 
-dotnet nuget push ./Target/DraftJSExporter.${VERSION}.nupkg -s https://api.nuget.org/v3/index.json -k $NUGET_API_KEY
+dotnet nuget push ./target/DraftJsExporter.Abstractions.${VERSION}.nupkg -s https://api.nuget.org/v3/index.json -k $NUGET_API_KEY
+dotnet nuget push ./target/DraftJsExporter.Exporter.${VERSION}.nupkg -s https://api.nuget.org/v3/index.json -k $NUGET_API_KEY
+dotnet nuget push ./target/DraftJsExporter.Exporter.Html.${VERSION}.nupkg -s https://api.nuget.org/v3/index.json -k $NUGET_API_KEY
